@@ -1,0 +1,38 @@
+@{
+    includeDefaultRules = $true
+    IncludeRules   = @(
+        # Project-specific ScriptAnalyzer rules.
+        'PSAvoidDefaultValueForMandatoryParameter',
+        'PSAvoidDefaultValueSwitchParameter',
+        'PSAvoidInvokingEmptyMembers',
+        'PSAvoidNullOrEmptyHelpMessageAttribute',
+        'PSAvoidUsingCmdletAliases',
+        'PSAvoidUsingComputerNameHardcoded',
+        'PSAvoidUsingDeprecatedManifestFields',
+        'PSAvoidUsingEmptyCatchBlock',
+        'PSAvoidUsingInvokeExpression',
+        'PSAvoidUsingPositionalParameters',
+        'PSAvoidShouldContinueWithoutForce',
+        'PSAvoidUsingWMICmdlet',
+        'PSAvoidUsingWriteHost',
+        'PSMisleadingBacktick',
+        'PSMissingModuleManifestField',
+        'PSPossibleIncorrectComparisonWithNull',
+        'PSProvideCommentHelp',
+        'PSReservedCmdletChar',
+        'PSReservedParams',
+        'PSUseApprovedVerbs',
+        'PSUseCmdletCorrectly',
+        'PSUseOutputTypeCorrectly',
+        'PSAvoidGlobalVars',
+        'PSAvoidUsingConvertToSecureStringWithPlainText',
+        'PSAvoidUsingPlainTextForPassword',
+        'PSAvoidUsingUsernameAndPasswordParams',
+        'PSShouldProcess',
+        'PSUseDeclaredVarsMoreThanAssignments',
+        'PSUsePSCredentialType',
+
+        'Measure-*'
+    )
+
+}
