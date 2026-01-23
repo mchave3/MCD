@@ -1,0 +1,126 @@
+﻿<Window
+    x:Class="WpfApp1.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="WinPE Task Sequence"
+    FontFamily="Segoe UI"
+    WindowState="Maximized">
+
+    <DockPanel Margin="30" LastChildFill="True">
+
+        <!--  HEADER  -->
+        <Border Padding="0,10" DockPanel.Dock="Top">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="30"
+                FontWeight="SemiBold"
+                Text="Task Sequence : DEPLOY Windows 11 - Site Marseille"
+                TextWrapping="Wrap" />
+        </Border>
+
+        <!--  FOOTER  -->
+        <Border Padding="0,10" DockPanel.Dock="Bottom">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="18"
+                Opacity="0.9"
+                Text="Step: 3 of 12" />
+        </Border>
+
+        <!--  CONTENT  -->
+        <Grid>
+
+            <!--  LEFT INFO PANEL  -->
+            <StackPanel
+                Width="300"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center">
+
+                <!--  Computer Name  -->
+                <TextBlock
+                    Margin="0,0,0,16"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Text="MININT-12345" />
+
+                <!--  Networking  -->
+                <TextBlock
+                    Margin="0,0,0,4"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="Networking" />
+
+                <TextBlock
+                    Margin="0,2,0,0"
+                    FontSize="16"
+                    Text="192.168.1.52" />
+                <TextBlock
+                    Margin="0,2,0,0"
+                    FontSize="16"
+                    Text="255.255.255.0" />
+                <TextBlock
+                    Margin="0,2,0,0"
+                    FontSize="16"
+                    Text="192.168.1.1" />
+                <TextBlock
+                    Margin="0,2,0,8"
+                    FontSize="16"
+                    Text="00-11-22-33-44-55" />
+
+                <!--  Start Time  -->
+                <TextBlock
+                    Margin="0,0,0,4"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="Start Time" />
+
+                <TextBlock
+                    Margin="0,0,0,8"
+                    FontSize="16"
+                    Text="2026-01-23  08:14:27" />
+
+                <!--  Elapsed Time  -->
+                <TextBlock
+                    Margin="0,0,0,4"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="Elapsed Time" />
+
+                <TextBlock FontSize="16" Text="00:12:45" />
+            </StackPanel>
+
+            <!--  CENTER PANEL  -->
+            <StackPanel
+                Width="700"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <TextBlock
+                    Margin="0,0,0,10"
+                    HorizontalAlignment="Center"
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="Étape en cours" />
+                <TextBlock
+                    Margin="0,0,0,18"
+                    FontSize="26"
+                    FontWeight="SemiBold"
+                    Text="Application de l'image Windows..."
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+                <!--  Progress Bar  -->
+                <ProgressBar
+                    Width="400"
+                    Height="10"
+                    IsIndeterminate="True"
+                    Maximum="100"
+                    Minimum="0" />
+                <TextBlock
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Center"
+                    FontSize="16"
+                    Opacity="0.9"
+                    Text="45 %" />
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
