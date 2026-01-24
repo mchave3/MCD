@@ -228,7 +228,7 @@ task Generate_Repo_Docs {
 
         $functions = @()
 
-        foreach ($file in (Get-ChildItem -Path $t.Source -Filter '*.ps1' -File))
+        foreach ($file in (Get-ChildItem -Path $t.Source -Filter '*.ps1' -File -Recurse))
         {
             foreach ($fn in (Get-RepoDocsFunctionHelp -FilePath $file.FullName))
             {
