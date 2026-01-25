@@ -1,0 +1,65 @@
+<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="MCD Wizard"
+    Width="900"
+    Height="560"
+    WindowStartupLocation="CenterScreen"
+    FontFamily="Segoe UI">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock FontSize="26" FontWeight="SemiBold" Text="Deployment wizard" />
+            <TextBlock FontSize="14" Opacity="0.75" Text="Select the target configuration for this deployment session." />
+        </StackPanel>
+
+        <Border Grid.Row="1" Padding="16" Background="#0A000000" CornerRadius="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="16" FontWeight="SemiBold" Text="Session options" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Computer language" />
+                <ComboBox x:Name="ComputerLanguageCombo" Grid.Row="1" Grid.Column="1" Margin="0,16,0,0" Height="34" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Operating system" />
+                <ComboBox x:Name="OperatingSystemCombo" Grid.Row="2" Grid.Column="1" Margin="0,16,0,0" Height="34" DisplayMemberPath="DisplayName" />
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Driver pack" />
+                <ComboBox x:Name="DriverPackCombo" Grid.Row="3" Grid.Column="1" Margin="0,16,0,0" Height="34" />
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Target disk" />
+                <ComboBox x:Name="TargetDiskCombo" Grid.Row="4" Grid.Column="1" Margin="0,16,0,0" Height="34" DisplayMemberPath="DisplayName" />
+
+                <CheckBox x:Name="ConfirmWipeCheckBox" Grid.Row="5" Grid.ColumnSpan="2" Margin="0,18,0,0" Content="I understand this will erase data on the selected disk" />
+
+                <TextBlock x:Name="WizardStatusText" Grid.Row="6" Grid.ColumnSpan="2" Margin="0,18,0,0" Opacity="0.75" TextWrapping="Wrap" />
+            </Grid>
+        </Border>
+
+        <DockPanel Grid.Row="2" Margin="0,16,0,0" LastChildFill="False">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="WizardCancelButton" Width="160" Height="36" Margin="0,0,10,0" Content="Cancel" />
+                <Button x:Name="WizardOkButton" Width="160" Height="36" Content="Start" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

@@ -53,19 +53,14 @@ function Start-MCDWinPE
         $winpeConfig = [PSCustomObject]@{}
     }
 
-    $dhcpWait = 20
-    if ($winpeConfig.DhcpWaitSeconds)
+    $workspaceConfig = Get-MCDConfig -ConfigName Workspace -ProfileName $ProfileName
+    if (-not $workspaceConfig)
     {
-        $dhcpWait = [int]$winpeConfig.DhcpWaitSeconds
+        Write-MCDLog -Level Warning -Message "Workspace config not found for profile '$ProfileName'. Using built-in defaults."
+        $workspaceConfig = [PSCustomObject]@{ ProfileName = $ProfileName }
     }
 
-    $testHost = 'google.com'
-    if ($winpeConfig.NetworkTestHostName)
-    {
-        $testHost = [string]$winpeConfig.NetworkTestHostName
-    }
-
-    $net = Test-MCDNetwork -WaitForDhcpSeconds $dhcpWait -TestHostName $testHost
+    $net = Start-MCDConnectivityFlow -WinPEConfig $winpeConfig -XamlRoot $context.XamlRoot -NoUI:$NoUI
     if (-not $net.HasDhcp)
     {
         Write-MCDLog -Level Warning -Message 'Network DHCP lease was not obtained within the expected timeframe.'
@@ -85,6 +80,26 @@ function Start-MCDWinPE
         return
     }
 
+    $selection = Start-MCDWizard -WorkspaceConfig $workspaceConfig -WinPEConfig $winpeConfig -XamlRoot $context.XamlRoot
+
+    # Attach config context for background deployment runner.
+    $selection | Add-Member -NotePropertyName ProfileName -NotePropertyValue $ProfileName -Force
+    $selection | Add-Member -NotePropertyName WinPEConfig -NotePropertyValue $winpeConfig -Force
+
+    $osId = $null
+    $osName = $null
+    if ($selection.OperatingSystem)
+    {
+        $osId = $selection.OperatingSystem.Id
+        $osName = $selection.OperatingSystem.DisplayName
+    }
+    $diskNumber = $null
+    if ($selection.TargetDisk)
+    {
+        $diskNumber = $selection.TargetDisk.DiskNumber
+    }
+    Write-MCDLog -Level Info -Message ("Wizard selection: Language='{0}', OS='{1}' ({2}), DriverPack='{3}', Disk='{4}'" -f $selection.ComputerLanguage, $osName, $osId, $selection.DriverPack, $diskNumber)
+
     $relativeXaml = 'WinPE\\MainWindow.xaml'
     if ($winpeConfig.XamlMainWindowRelativePath)
     {
@@ -95,6 +110,17 @@ function Start-MCDWinPE
     {
         $xamlPath = Join-Path -Path $context.XamlRoot -ChildPath $relativeXaml
         $window = Import-MCDWinPEXaml -XamlPath $xamlPath
+
+        $deploymentStarted = $false
+        $window.Add_ContentRendered({
+                if ($deploymentStarted)
+                {
+                    return
+                }
+                $deploymentStarted = $true
+                Start-MCDWinPEDeploymentAsync -Window $window -Selection $selection
+            })
+
         Start-MCDWinPEMainWindow -Window $window
     }
 }

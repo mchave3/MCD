@@ -35,13 +35,13 @@ Describe 'Start-MCDWinPE' {
             }
 
             Mock Write-MCDLog -ModuleName $script:moduleName
-            Mock Get-MCDConfig -ModuleName $script:moduleName -MockWith { $null }
 
-            Mock Test-MCDNetwork -ModuleName $script:moduleName -MockWith {
-                [PSCustomObject]@{
-                    HasDhcp     = $true
-                    HasInternet = $true
-                }
+            Mock Get-MCDConfig -ModuleName $script:moduleName -MockWith {
+                [PSCustomObject]@{ ProfileName = 'Default' }
+            }
+
+            Mock Start-MCDConnectivityFlow -ModuleName $script:moduleName -MockWith {
+                [PSCustomObject]@{ HasDhcp = $true; HasInternet = $true }
             }
 
             Mock Update-MCDFromPSGallery -ModuleName $script:moduleName -MockWith { $true }
@@ -49,11 +49,13 @@ Describe 'Start-MCDWinPE' {
 
         It 'Checks for updates when online (unless skipped)' {
             Start-MCDWinPE -ProfileName 'Default' -NoUI
+            Should -Invoke Start-MCDConnectivityFlow -ModuleName $script:moduleName -Times 1
             Should -Invoke Update-MCDFromPSGallery -ModuleName $script:moduleName -Times 1
         }
 
         It 'Does not update when SkipModuleUpdate is set' {
             Start-MCDWinPE -ProfileName 'Default' -SkipModuleUpdate -NoUI
+            Should -Invoke Start-MCDConnectivityFlow -ModuleName $script:moduleName -Times 1
             Should -Invoke Update-MCDFromPSGallery -ModuleName $script:moduleName -Times 0
         }
     }

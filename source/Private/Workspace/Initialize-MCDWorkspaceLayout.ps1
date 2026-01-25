@@ -52,6 +52,31 @@ function Initialize-MCDWorkspaceLayout
         LogsRoot         = $logsRoot
         CacheRoot        = $cacheRoot
         MediaPayloadRoot = $mediaPayloadRoot
+        WizardOptions    = @{
+            ComputerLanguages = @('fr-FR', 'en-US')
+            OperatingSystems  = @(
+                @{
+                    Id = 'Win11-23H2'
+                    DisplayName = 'Windows 11 23H2'
+                    Source = @{ Type = 'WIM'; Path = ''; Uri = '' }
+                    ImageIndex = 6
+                    AllowedLanguages = @('fr-FR','en-US')
+                }
+                @{
+                    Id = 'Win10-22H2'
+                    DisplayName = 'Windows 10 22H2'
+                    Source = @{ Type = 'WIM'; Path = ''; Uri = '' }
+                    ImageIndex = 6
+                    AllowedLanguages = @('fr-FR','en-US')
+                }
+            )
+            DriverPacks       = @('Auto', 'Dell', 'HP', 'Lenovo', 'Surface', 'VMware')
+            WinPELanguages    = @('fr-FR', 'en-US')
+            Wallpaper         = @{
+                Enabled = $false
+                Path    = ''
+            }
+        }
         UpdatedAt        = (Get-Date).ToString('o')
     }
 
@@ -59,9 +84,23 @@ function Initialize-MCDWorkspaceLayout
         ProfileName               = $ProfileName
         PreferPSGalleryUpdate     = $true
         EnableWirelessConnectUi   = $true
+        AutoConnectWifiProfile    = $true
+        WifiProfileRelativePaths  = @(
+            'MCD\\Config\\WiFi\\WiFiProfile.xml'
+            'MCD\\Config\\WiFi\\*.xml'
+        )
+        DiskPolicy                = @{
+            Mode                     = 'AutoIfSingleElsePrompt'
+            ExcludeBusTypes          = @('USB')
+            RequireConfirmIfMultiple = $true
+            AllowDestructiveActions  = $false
+            DefaultDiskNumber        = $null
+        }
         NetworkTestHostName       = 'google.com'
         DhcpWaitSeconds           = 20
         XamlMainWindowRelativePath = 'WinPE\\MainWindow.xaml'
+        XamlConnectivityWindowRelativePath = 'WinPE\\ConnectivityWindow.xaml'
+        XamlWizardWindowRelativePath       = 'WinPE\\WizardWindow.xaml'
         UpdatedAt                 = (Get-Date).ToString('o')
     }
 
