@@ -16,7 +16,7 @@ Windows.Markup.XamlReader. Returns the resulting Window instance.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| XamlPath | String | Yes | No | Full path to the XAML file to load as a WPF window.   |
+| XamlPath | String | Yes | No | Full path to the XAML file to load as a WPF window. |
 
 ## Examples
 

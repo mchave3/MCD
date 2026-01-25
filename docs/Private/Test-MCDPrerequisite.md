@@ -17,9 +17,9 @@ and optionally verifying administrator rights.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| RequireWinPE | SwitchParameter | No | No | Requires the current runtime to be WinPE (SystemDrive = X:).   |
-| RequireFullOS | SwitchParameter | No | No | Requires the current runtime to be full Windows (not WinPE).   |
-| RequireAdministrator | SwitchParameter | No | No | Requires the current process to run with administrator rights.   |
+| RequireWinPE | SwitchParameter | No | No | Requires the current runtime to be WinPE (SystemDrive = X:). |
+| RequireFullOS | SwitchParameter | No | No | Requires the current runtime to be full Windows (not WinPE). |
+| RequireAdministrator | SwitchParameter | No | No | Requires the current process to run with administrator rights. |
 
 ## Examples
 

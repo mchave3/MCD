@@ -17,9 +17,9 @@ context (WinPE vs full Windows).
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| Level | String | Yes | No | Log level used to tag the message in the log file and in verbose output.   |
-| Message | String | Yes | No | The message text to write as a single log line.   |
-| Path | String | No | No | Optional explicit path to the log file to write to.   |
+| Level | String | Yes | No | Log level used to tag the message in the log file and in verbose output. |
+| Message | String | Yes | No | The message text to write as a single log line. |
+| Path | String | No | No | Optional explicit path to the log file to write to. |
 
 ## Examples
 

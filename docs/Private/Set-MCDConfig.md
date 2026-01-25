@@ -17,9 +17,9 @@ the Workspace flow to create/update a profile configuration.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| ConfigName | String | Yes | No | Name of the configuration file to write (Workspace or WinPE).   |
-| Data | Hashtable | Yes | No | Hashtable that will be serialized to JSON and written to disk.   |
-| ProfileName | String | No | No | Workspace profile name to store the configuration under ProgramData.   |
+| ConfigName | String | Yes | No | Name of the configuration file to write (Workspace or WinPE). |
+| Data | Hashtable | Yes | No | Hashtable that will be serialized to JSON and written to disk. |
+| ProfileName | String | No | No | Workspace profile name to store the configuration under ProgramData. |
 
 ## Examples
 

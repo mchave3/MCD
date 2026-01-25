@@ -17,9 +17,9 @@ Wi-Fi connection UI (WirelessConnect.exe when available), then re-test.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| WinPEConfig | PSObject | No | No | WinPE configuration object (typically loaded from Get-MCDConfig).   |
-| XamlRoot | String | Yes | No | Root directory containing the WinPE XAML files.   |
-| NoUI | SwitchParameter | No | No | Disables the connectivity window and only performs non-interactive tests.   |
+| WinPEConfig | PSObject | No | No | WinPE configuration object (typically loaded from Get-MCDConfig). |
+| XamlRoot | String | Yes | No | Root directory containing the WinPE XAML files. |
+| NoUI | SwitchParameter | No | No | Disables the connectivity window and only performs non-interactive tests. |
 
 ## Examples
 

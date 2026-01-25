@@ -16,7 +16,7 @@ and writes initial profile configuration files under %ProgramData%\MCD\Profiles\
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| ProfileName | String | Yes | No | Name of the profile used to create the workspace and profile configuration.   |
+| ProfileName | String | Yes | No | Name of the profile used to create the workspace and profile configuration. |
 
 ## Examples
 

@@ -17,7 +17,7 @@ is suitable for use in the WinPE wizard UI.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| ExcludeBusTypes | String[] | No | No | One or more storage BusTypes to exclude (for example 'USB').   |
+| ExcludeBusTypes | String[] | No | No | One or more storage BusTypes to exclude (for example 'USB'). |
 
 ## Examples
 

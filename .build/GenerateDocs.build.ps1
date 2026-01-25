@@ -157,7 +157,7 @@ function Convert-RepoDocsHelpToMarkdown {
             $mandatory = if ($p.Mandatory) { 'Yes' } else { 'No' }
             $pipeline = if ($p.Pipeline) { 'Yes' } else { 'No' }
             $type = if ($p.Type) { $p.Type } else { '' }
-            $desc = if ($p.Description) { ($p.Description -replace "\r?\n", ' ') } else { '' }
+            $desc = if ($p.Description) { ($p.Description -replace "\r?\n", ' ').Trim() } else { '' }
 
             # Escape pipe in description so it doesn't break the table.
             $desc = $desc -replace '\|', '\\|'

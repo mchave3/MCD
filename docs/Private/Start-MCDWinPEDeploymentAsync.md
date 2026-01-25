@@ -17,8 +17,8 @@ WPF Dispatcher.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| Window | Object | Yes | No | The WinPE main window that will receive progress updates via Dispatcher.   |
-| Selection | PSObject | Yes | No | The selection object returned by Start-MCDWizard.   |
+| Window | Object | Yes | No | The WinPE main window that will receive progress updates via Dispatcher. |
+| Selection | PSObject | Yes | No | The selection object returned by Start-MCDWizard. |
 
 ## Examples
 

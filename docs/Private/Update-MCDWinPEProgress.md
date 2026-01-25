@@ -17,12 +17,12 @@ foundation for a TSBackground-like experience.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| Window | Object | Yes | No | The main WPF Window instance that contains the named UI controls.   |
-| StepName | String | Yes | No | Friendly name of the current step.   |
-| StepIndex | Int32 | Yes | No | 1-based index of the current step.   |
-| StepCount | Int32 | Yes | No | Total number of steps in the overall deployment workflow.   |
-| Percent | Int32 | Yes | No | Percent complete for the overall workflow (0-100).   |
-| Indeterminate | SwitchParameter | No | No | When set, displays an indeterminate progress bar.   |
+| Window | Object | Yes | No | The main WPF Window instance that contains the named UI controls. |
+| StepName | String | Yes | No | Friendly name of the current step. |
+| StepIndex | Int32 | Yes | No | 1-based index of the current step. |
+| StepCount | Int32 | Yes | No | Total number of steps in the overall deployment workflow. |
+| Percent | Int32 | Yes | No | Percent complete for the overall workflow (0-100). |
+| Indeterminate | SwitchParameter | No | No | When set, displays an indeterminate progress bar. |
 
 ## Examples
 

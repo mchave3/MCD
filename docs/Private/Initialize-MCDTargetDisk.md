@@ -27,8 +27,8 @@ available.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| DiskNumber | Int32 | Yes | No | Disk number to prepare (the disk will be wiped and repartitioned when destructive actions are permitted).   |
-| DiskPolicy | PSObject | No | No | WinPE disk policy object (typically from WinPE config). The property AllowDestructiveActions must be $true to permit wiping/partitioning.   |
+| DiskNumber | Int32 | Yes | No | Disk number to prepare (the disk will be wiped and repartitioned when destructive actions are permitted). |
+| DiskPolicy | PSObject | No | No | WinPE disk policy object (typically from WinPE config). The property AllowDestructiveActions must be $true to permit wiping/partitioning. |
 
 ## Examples
 

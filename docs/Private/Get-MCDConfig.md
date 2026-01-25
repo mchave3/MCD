@@ -17,8 +17,8 @@ object. This is used by both Workspace and WinPE flows.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| ConfigName | String | Yes | No | Name of the configuration file to load (Workspace or WinPE).   |
-| ProfileName | String | No | No | Workspace profile name to load the configuration from under ProgramData.   |
+| ConfigName | String | Yes | No | Name of the configuration file to load (Workspace or WinPE). |
+| ProfileName | String | No | No | Workspace profile name to load the configuration from under ProgramData. |
 
 ## Examples
 

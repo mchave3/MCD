@@ -17,9 +17,9 @@ exists, the function returns the existing file unless -Force is specified.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| Uri | String | Yes | No | The HTTP/HTTPS URI of the file to download.   |
-| DestinationPath | String | Yes | No | Full path where the downloaded file will be written.   |
-| Force | SwitchParameter | No | No | Overwrites the destination file when it already exists.   |
+| Uri | String | Yes | No | The HTTP/HTTPS URI of the file to download. |
+| DestinationPath | String | Yes | No | Full path where the downloaded file will be written. |
+| Force | SwitchParameter | No | No | Overwrites the destination file when it already exists. |
 
 ## Examples
 

@@ -17,7 +17,7 @@ imported again. This mirrors the version-check behavior used by OSDCloud.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| ModuleName | String | No | No | Name of the module to check and update from PowerShell Gallery.   |
+| ModuleName | String | No | No | Name of the module to check and update from PowerShell Gallery. |
 
 ## Examples
 

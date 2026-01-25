@@ -16,7 +16,7 @@ writes initial Workspace and WinPE configuration files for that profile.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| ProfileName | String | No | No | Name of the workspace profile to create or update under ProgramData.   |
+| ProfileName | String | No | No | Name of the workspace profile to create or update under ProgramData. |
 
 ## Examples
 

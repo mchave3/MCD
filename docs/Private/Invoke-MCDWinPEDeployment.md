@@ -18,8 +18,8 @@ the target disk selection policy is defined.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| Window | Object | Yes | No | The WinPE main window that will be updated during the deployment workflow.   |
-| Selection | PSObject | Yes | No | The selection object returned by Start-MCDWizard including OS and language.   |
+| Window | Object | Yes | No | The WinPE main window that will be updated during the deployment workflow. |
+| Selection | PSObject | Yes | No | The selection object returned by Start-MCDWizard including OS and language. |
 
 ## Examples
 

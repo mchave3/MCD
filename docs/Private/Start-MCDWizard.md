@@ -17,10 +17,10 @@ the selected computer language, operating system id, and driver pack.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| WorkspaceConfig | PSObject | Yes | No | Workspace configuration object (typically loaded from Get-MCDConfig).   |
-| WinPEConfig | PSObject | No | No | WinPE configuration object (typically loaded from Get-MCDConfig).   |
-| XamlRoot | String | Yes | No | Root directory containing the WinPE XAML files.   |
-| NoUI | SwitchParameter | No | No | Disables the wizard UI and returns default selections.   |
+| WorkspaceConfig | PSObject | Yes | No | Workspace configuration object (typically loaded from Get-MCDConfig). |
+| WinPEConfig | PSObject | No | No | WinPE configuration object (typically loaded from Get-MCDConfig). |
+| XamlRoot | String | Yes | No | Root directory containing the WinPE XAML files. |
+| NoUI | SwitchParameter | No | No | Disables the wizard UI and returns default selections. |
 
 ## Examples
 

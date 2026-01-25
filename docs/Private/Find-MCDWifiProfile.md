@@ -17,7 +17,7 @@ matching profile path.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| RelativePaths | String[] | Yes | No | One or more relative path patterns to search for on each external volume.   |
+| RelativePaths | String[] | Yes | No | One or more relative path patterns to search for on each external volume. |
 
 ## Examples
 

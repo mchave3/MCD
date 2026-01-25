@@ -16,8 +16,8 @@ basic Internet reachability using ICMP to a configurable host name.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| WaitForDhcpSeconds | Int32 | No | No | Maximum number of seconds to wait for a DHCP-assigned IPv4 address.   |
-| TestHostName | String | No | No | Host name to test for basic Internet connectivity using Test-Connection.   |
+| WaitForDhcpSeconds | Int32 | No | No | Maximum number of seconds to wait for a DHCP-assigned IPv4 address. |
+| TestHostName | String | No | No | Host name to test for basic Internet connectivity using Test-Connection. |
 
 ## Examples
 

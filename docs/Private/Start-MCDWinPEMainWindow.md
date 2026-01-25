@@ -16,7 +16,7 @@ small wrapper to make the UI entry point mockable during unit tests.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| Window | Object | Yes | No | The WPF Window instance to display as a modal dialog.   |
+| Window | Object | Yes | No | The WPF Window instance to display as a modal dialog. |
 
 ## Examples
 

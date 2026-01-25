@@ -17,9 +17,9 @@ and shows the WinPE main window XAML.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| ProfileName | String | No | No | Workspace profile name to load WinPE configuration from under ProgramData.   |
-| SkipModuleUpdate | SwitchParameter | No | No | Skips the PowerShell Gallery update check for the MCD module in WinPE.   |
-| NoUI | SwitchParameter | No | No | Prevents opening the WinPE UI. Intended for automated testing scenarios.   |
+| ProfileName | String | No | No | Workspace profile name to load WinPE configuration from under ProgramData. |
+| SkipModuleUpdate | SwitchParameter | No | No | Skips the PowerShell Gallery update check for the MCD module in WinPE. |
+| NoUI | SwitchParameter | No | No | Prevents opening the WinPE UI. Intended for automated testing scenarios. |
 
 ## Examples
 

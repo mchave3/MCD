@@ -18,9 +18,9 @@ volumes.
 
 | Name | Type | Mandatory | Pipeline | Description |
 | --- | --- | --- | --- | --- |
-| PreferredLetters | String[] | No | No | Ordered list of preferred drive letters to try first.   |
-| FallbackLetters | String[] | No | No | Ordered list of fallback drive letters to try if none of the preferred letters are available.   |
-| ExcludeLetters | String[] | No | No | One or more letters to treat as unavailable (reserved by the caller).   |
+| PreferredLetters | String[] | No | No | Ordered list of preferred drive letters to try first. |
+| FallbackLetters | String[] | No | No | Ordered list of fallback drive letters to try if none of the preferred letters are available. |
+| ExcludeLetters | String[] | No | No | One or more letters to treat as unavailable (reserved by the caller). |
 
 ## Examples
 
