@@ -5,8 +5,8 @@
       <PublishedMedia>
         <Files>
           <File>
-            <FileName>Win11_23H2_English_x64.esd</FileName>
-            <FilePath>https://download.example.invalid/CLIENTCONSUMER_RET_x64FRE_en-us/Win11_23H2_English_x64.esd</FilePath>
+            <FileName>22631.2861.231204-0538.23H2_ni_release_svc_refresh_CLIENTCONSUMER_RET_x64FRE_en-us.esd</FileName>
+            <FilePath>https://download.example.invalid/CLIENTCONSUMER_RET_x64FRE_en-us/22631.2861.231204-0538.23H2_ni_release_svc_refresh_CLIENTCONSUMER_RET_x64FRE_en-us.esd</FilePath>
             <Sha1>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Sha1>
             <Size>123</Size>
             <Architecture>x64</Architecture>
@@ -16,8 +16,8 @@
             <IsRetailOnly>false</IsRetailOnly>
           </File>
           <File>
-            <FileName>Win10_22H2_French_x64.esd</FileName>
-            <FilePath>https://download.example.invalid/CLIENTBUSINESS_VOL_x64FRE_fr-fr/Win10_22H2_French_x64.esd</FilePath>
+            <FileName>19045.2965.230505-1139.22h2_release_svc_refresh_CLIENTBUSINESS_VOL_x64FRE_fr-fr.esd</FileName>
+            <FilePath>https://download.example.invalid/CLIENTBUSINESS_VOL_x64FRE_fr-fr/19045.2965.230505-1139.22h2_release_svc_refresh_CLIENTBUSINESS_VOL_x64FRE_fr-fr.esd</FilePath>
             <Sha1>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</Sha1>
             <Size>456</Size>
             <Architecture>x64</Architecture>

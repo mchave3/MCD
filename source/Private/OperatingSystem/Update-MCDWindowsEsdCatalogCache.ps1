@@ -24,6 +24,19 @@ function Update-MCDWindowsEsdCatalogCache
     Optional offline inputs (for tests) to avoid downloading. Each entry must provide
     SourceFwlinkId and Path to a products.xml file.
 
+    .PARAMETER UseWorProject
+    If set (default), uses WORProject MCT Catalogs API to enumerate historical CAB
+    catalogs and selects the latest UBR per build major.
+
+    .PARAMETER WorProjectVersionsUri
+    URI to WORProject getversions endpoint.
+
+    .PARAMETER MinimumBuildMajorWin10
+    Minimum build major (e.g. 19041) to include for Windows 10 when using WORProject.
+
+    .PARAMETER MinimumBuildMajorWin11
+    Minimum build major (e.g. 22000) to include for Windows 11 when using WORProject.
+
     .PARAMETER IncludeUrl
     Includes direct download URLs in the committed catalog.
 
@@ -49,8 +62,8 @@ function Update-MCDWindowsEsdCatalogCache
         [ValidateNotNull()]
         [hashtable[]]
         $Fwlinks = @(
-            @{ Id = '841361';  Url = 'https://go.microsoft.com/fwlink/?LinkId=841361';  Purpose = 'Windows 10 products.cab' },
-            @{ Id = '2156292'; Url = 'https://go.microsoft.com/fwlink/?LinkId=2156292'; Purpose = 'Windows 11 products.cab' }
+            @{ Id = '841361';  Url = 'https://go.microsoft.com/fwlink/?LinkId=841361';  Purpose = 'Windows 10 products.cab'; WindowsMajor = '10' },
+            @{ Id = '2156292'; Url = 'https://go.microsoft.com/fwlink/?LinkId=2156292'; Purpose = 'Windows 11 products.cab'; WindowsMajor = '11' }
         ),
 
         [Parameter()]
@@ -62,6 +75,25 @@ function Update-MCDWindowsEsdCatalogCache
         [ValidateNotNull()]
         [hashtable[]]
         $ProductsXmlInputs = @(),
+
+        [Parameter()]
+        [System.Management.Automation.SwitchParameter]
+        $UseWorProject = $true,
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $WorProjectVersionsUri = 'https://worproject.com/dldserv/esd/getversions.php',
+
+        [Parameter()]
+        [ValidateRange(0, 99999)]
+        [int]
+        $MinimumBuildMajorWin10 = 0,
+
+        [Parameter()]
+        [ValidateRange(0, 99999)]
+        [int]
+        $MinimumBuildMajorWin11 = 22000,
 
         [Parameter()]
         [System.Management.Automation.SwitchParameter]
@@ -78,6 +110,239 @@ function Update-MCDWindowsEsdCatalogCache
         [int]
         $MinimumItemCount = 100
     )
+
+    function Get-MCDFwlinkIdFromUrl
+    {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]$Url
+        )
+
+        try
+        {
+            $u = [System.Uri]$Url
+            $query = $u.Query
+            if (-not $query)
+            {
+                return $null
+            }
+
+            $m = [regex]::Match($query, '(?i)(?:\?|&)LinkId=(\d+)')
+            if ($m.Success)
+            {
+                return $m.Groups[1].Value
+            }
+        }
+        catch
+        {
+        }
+
+        $null
+    }
+
+    function ConvertTo-MCDWindowsMajor
+    {
+        param(
+            [Parameter(Mandatory = $true)]
+            [object]$Value
+        )
+
+        if ($null -eq $Value)
+        {
+            return $null
+        }
+
+        $s = [string]$Value
+        if (-not $s)
+        {
+            return $null
+        }
+
+        if ($s -match '^\d+$')
+        {
+            return $s
+        }
+
+        $null
+    }
+
+    function ConvertTo-MCDBuildParts
+    {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]$Build
+        )
+
+        $major = $null
+        $ubr = $null
+
+        $m = [regex]::Match($Build, '^(\d{5})(?:\.(\d+))?$')
+        if ($m.Success)
+        {
+            [int]$tmpMajor = 0
+            if ([int]::TryParse($m.Groups[1].Value, [ref]$tmpMajor))
+            {
+                $major = $tmpMajor
+            }
+
+            if ($m.Groups[2].Success)
+            {
+                [int]$tmpUbr = 0
+                if ([int]::TryParse($m.Groups[2].Value, [ref]$tmpUbr))
+                {
+                    $ubr = $tmpUbr
+                }
+            }
+        }
+
+        [pscustomobject]@{
+            Major = $major
+            Ubr   = $ubr
+        }
+    }
+
+    $latestFwlinksMap = @{}
+
+    function Add-MCDLatestFwlink
+    {
+        param(
+            [Parameter(Mandatory = $true)]
+            [object]$WindowsMajor,
+            [Parameter(Mandatory = $true)]
+            [string]$FwlinkUrl
+        )
+
+        $wm = ConvertTo-MCDWindowsMajor -Value $WindowsMajor
+        if (-not $wm)
+        {
+            return
+        }
+
+        $id = Get-MCDFwlinkIdFromUrl -Url $FwlinkUrl
+        if (-not $id)
+        {
+            return
+        }
+
+        $latestFwlinksMap[$wm] = [PSCustomObject]([ordered]@{
+                windowsMajor = $wm
+                fwlinkId     = $id
+                fwlinkUrl    = $FwlinkUrl
+            })
+    }
+
+    function Get-MCDWorProjectSources
+    {
+        param(
+            [Parameter(Mandatory = $true)]
+            [string]$Uri
+        )
+
+        $resp = Invoke-WebRequest -UseBasicParsing -Uri $Uri -ErrorAction Stop
+        [xml]$db = $resp.Content
+
+        $sources = @()
+
+        foreach ($v in @($db.productsDb.versions.version))
+        {
+            $windowsMajor = [string]$v.number
+            if (-not $windowsMajor)
+            {
+                continue
+            }
+
+            $latestFwlinkUrl = [string]$v.latestCabLink
+            if ($latestFwlinkUrl)
+            {
+                Add-MCDLatestFwlink -WindowsMajor $windowsMajor -FwlinkUrl $latestFwlinkUrl
+            }
+
+            $bestByBuildMajor = @{}
+
+            foreach ($r in @($v.releases.release))
+            {
+                $build = [string]$r.build
+                $date = [string]$r.date
+                $cabUrl = [string]$r.cabLink
+                if (-not $build -or -not $cabUrl)
+                {
+                    continue
+                }
+
+                $parts = ConvertTo-MCDBuildParts -Build $build
+                if (-not $parts.Major)
+                {
+                    continue
+                }
+
+                $key = [string]$parts.Major
+                $current = $bestByBuildMajor[$key]
+
+                $take = $false
+                if (-not $current)
+                {
+                    $take = $true
+                }
+                else
+                {
+                    # Prefer highest UBR for a given build major.
+                    $curUbr = $current.BuildUbr
+                    $newUbr = $parts.Ubr
+                    if ($null -eq $curUbr) { $curUbr = -1 }
+                    if ($null -eq $newUbr) { $newUbr = -1 }
+
+                    if ($newUbr -gt $curUbr)
+                    {
+                        $take = $true
+                    }
+                    elseif ($newUbr -eq $curUbr)
+                    {
+                        # Tie-breaker: latest date.
+                        if ($date -and ($date -gt $current.Date))
+                        {
+                            $take = $true
+                        }
+                    }
+                }
+
+                if ($take)
+                {
+                $bestByBuildMajor[$key] = [pscustomobject]@{
+                    WindowsMajor    = $windowsMajor
+                    LatestFwlinkUrl = $latestFwlinkUrl
+                    Build           = $build
+                    BuildMajor      = $parts.Major
+                    BuildUbr        = $parts.Ubr
+                    Date            = $date
+                    CabUrl          = $cabUrl
+                }
+            }
+        }
+
+            $selected = @($bestByBuildMajor.Values)
+
+            # Keep the catalog set to a reasonable/supported range by default.
+            if ($windowsMajor -eq '10')
+            {
+                $selected = @($selected | Where-Object { $_.BuildMajor -ge $MinimumBuildMajorWin10 })
+            }
+            elseif ($windowsMajor -eq '11')
+            {
+                $selected = @($selected | Where-Object { $_.BuildMajor -ge $MinimumBuildMajorWin11 })
+            }
+
+            $sources += $selected
+        }
+
+        # Deterministic ordering: newest Windows/build first.
+        $sources | Sort-Object -Descending -Property @(
+            @{ Expression = { [int]$_.WindowsMajor } },
+            @{ Expression = { $_.BuildMajor } },
+            @{ Expression = { $_.BuildUbr } },
+            @{ Expression = { $_.Date } },
+            @{ Expression = { $_.CabUrl } }
+        )
+    }
 
     function New-MCDDeterministicJson
     {
@@ -131,12 +396,28 @@ function Update-MCDWindowsEsdCatalogCache
             $writer.WriteStartElement('WindowsEsdCatalog')
             $writer.WriteAttributeString('schemaVersion', [string]$Catalog.schemaVersion)
 
+            $writer.WriteStartElement('LatestFwlinks')
+            foreach ($lf in $Catalog.latestFwlinks)
+            {
+                $writer.WriteStartElement('LatestFwlink')
+                if ($lf.windowsMajor) { $writer.WriteAttributeString('windowsMajor', [string]$lf.windowsMajor) }
+                if ($lf.fwlinkId) { $writer.WriteAttributeString('fwlinkId', [string]$lf.fwlinkId) }
+                if ($lf.fwlinkUrl) { $writer.WriteAttributeString('fwlinkUrl', [string]$lf.fwlinkUrl) }
+                $writer.WriteEndElement()
+            }
+            $writer.WriteEndElement()
+
             $writer.WriteStartElement('Sources')
             foreach ($s in $Catalog.sources)
             {
                 $writer.WriteStartElement('Source')
-                $writer.WriteAttributeString('fwlinkId', [string]$s.id)
-                $writer.WriteAttributeString('url', [string]$s.url)
+                if ($s.id) { $writer.WriteAttributeString('id', [string]$s.id) }
+                if ($s.windowsMajor) { $writer.WriteAttributeString('windowsMajor', [string]$s.windowsMajor) }
+                if ($s.build) { $writer.WriteAttributeString('build', [string]$s.build) }
+                if ($null -ne $s.buildMajor) { $writer.WriteAttributeString('buildMajor', [string]$s.buildMajor) }
+                if ($null -ne $s.buildUbr) { $writer.WriteAttributeString('buildUbr', [string]$s.buildUbr) }
+                if ($s.date) { $writer.WriteAttributeString('date', [string]$s.date) }
+                if ($s.cabUrl) { $writer.WriteAttributeString('cabUrl', [string]$s.cabUrl) }
                 if ($s.cabSha256) { $writer.WriteAttributeString('cabSha256', [string]$s.cabSha256) }
                 if ($s.productsXmlSha256) { $writer.WriteAttributeString('productsXmlSha256', [string]$s.productsXmlSha256) }
                 if ($s.purpose) { $writer.WriteAttributeString('purpose', [string]$s.purpose) }
@@ -182,6 +463,30 @@ function Update-MCDWindowsEsdCatalogCache
     $sources = @()
     $itemsAll = @()
 
+    # Seed latest fwlinks from the explicit Fwlinks parameter.
+    foreach ($f in @($Fwlinks))
+    {
+        $fUrl = [string]$f.Url
+        if (-not $fUrl)
+        {
+            continue
+        }
+
+        $wm = $null
+        if ($f.ContainsKey('WindowsMajor'))
+        {
+            $wm = $f.WindowsMajor
+        }
+        elseif ($f.ContainsKey('Purpose'))
+        {
+            $p = [string]$f.Purpose
+            if ($p -match '(?i)Windows\s+11') { $wm = '11' }
+            elseif ($p -match '(?i)Windows\s+10') { $wm = '10' }
+        }
+
+        Add-MCDLatestFwlink -WindowsMajor $wm -FwlinkUrl $fUrl
+    }
+
     $tempRoot = Join-Path -Path $env:TEMP -ChildPath ('mcd-esd-catalog-' + [guid]::NewGuid())
     $null = New-Item -Path $tempRoot -ItemType Directory -Force
     try
@@ -190,6 +495,10 @@ function Update-MCDWindowsEsdCatalogCache
         if ($ProductsXmlInputs -and $ProductsXmlInputs.Count -gt 0)
         {
             $inputs = $ProductsXmlInputs
+        }
+        elseif ($UseWorProject)
+        {
+            $inputs = Get-MCDWorProjectSources -Uri $WorProjectVersionsUri
         }
         else
         {
@@ -203,29 +512,118 @@ function Update-MCDWindowsEsdCatalogCache
             {
                 $sourceId = [string]$src.Id
             }
-            if (-not $sourceId)
-            {
-                throw 'Each source must provide Id or SourceFwlinkId.'
-            }
 
             $purpose = [string]$src.Purpose
             $url = [string]$src.Url
             $xmlPath = [string]$src.Path
             $cabSha256 = $null
 
+            $windowsMajor = $null
+            $build = $null
+            $buildMajor = $null
+            $buildUbr = $null
+            $date = $null
+            $fwlinkUrl = $null
+            $fwlinkId = $null
+            $cabUrl = $null
+
+            if ($UseWorProject -and (-not $ProductsXmlInputs -or $ProductsXmlInputs.Count -eq 0))
+            {
+                $windowsMajor = [string]$src.WindowsMajor
+                $build = [string]$src.Build
+                $buildMajor = $src.BuildMajor
+                $buildUbr = $src.BuildUbr
+                $date = [string]$src.Date
+                $fwlinkUrl = [string]$src.LatestFwlinkUrl
+                $cabUrl = [string]$src.CabUrl
+
+                if (-not $cabUrl)
+                {
+                    throw "WORProject source missing CabUrl for Windows $windowsMajor build '$build'."
+                }
+
+                # Some entries are hosted on WORProject as mirrors. Prefer Microsoft-hosted URLs when possible.
+                # If the CAB is not hosted by Microsoft, we will attempt it first, then fall back to the fwlink.
+                $downloadUrl = $cabUrl
+                try
+                {
+                    $hostName = ([System.Uri]$cabUrl).Host
+                    if ($hostName -ieq 'worproject.com' -and $fwlinkUrl)
+                    {
+                        $downloadUrl = $cabUrl
+                    }
+                }
+                catch
+                {
+                }
+
+                if (-not $sourceId)
+                {
+                    # Stable id for the source.
+                    $sourceId = "Win{0}_{1}" -f $windowsMajor, $build
+                }
+
+                if (-not $purpose)
+                {
+                    $purpose = "Windows $windowsMajor catalog $build ($date)"
+                }
+
+                # When using WORProject sources, use CabUrl as the primary URL.
+                $url = $downloadUrl
+            }
+
+            if (-not $sourceId)
+            {
+                throw 'Each source must provide Id/SourceFwlinkId, or enough metadata to build one.'
+            }
+
             if (-not $xmlPath)
             {
                 if (-not $url)
                 {
-                    throw "Source '$sourceId' is missing Url."
+                    if ($cabUrl)
+                    {
+                        $url = $cabUrl
+                    }
+                    else
+                    {
+                        throw "Source '$sourceId' is missing Url."
+                    }
                 }
 
                 $cabPath = Join-Path -Path $tempRoot -ChildPath ("products_$sourceId.cab")
-                $null = Invoke-MCDDownload -Uri $url -DestinationPath $cabPath
+                try
+                {
+                    $null = Invoke-MCDDownload -Uri $url -DestinationPath $cabPath
+                }
+                catch
+                {
+                    if ($UseWorProject)
+                    {
+                        # Historical CABs may be unreachable from some networks. Do not silently
+                        # swap to a different (latest) catalog via fwlink; that would corrupt
+                        # the intended build selection.
+                        Write-Warning -Message ("Skipping source '{0}' because CAB download failed: {1}" -f $sourceId, $_.Exception.Message)
+                        continue
+                    }
+
+                    throw
+                }
                 $cabSha256 = (Get-FileHash -Path $cabPath -Algorithm SHA256).Hash.ToLowerInvariant()
 
                 $xmlPath = Join-Path -Path $tempRoot -ChildPath ("products_$sourceId.xml")
                 & $expandExe '-F:products.xml' $cabPath $xmlPath | Out-Null
+
+                if (-not (Test-Path -Path $xmlPath))
+                {
+                    # Fallback for CABs that don't embed products.xml with expected name.
+                    $null = & $expandExe '-F:*.xml' $cabPath $tempRoot
+                    $xmlCandidates = @(Get-ChildItem -Path $tempRoot -Filter '*.xml' -File | Where-Object { $_.Name -notlike "products_$sourceId.xml" })
+                    if ($xmlCandidates.Count -eq 1)
+                    {
+                        Copy-Item -Path $xmlCandidates[0].FullName -Destination $xmlPath -Force
+                    }
+                }
             }
 
             if (-not (Test-Path -Path $xmlPath))
@@ -239,9 +637,23 @@ function Update-MCDWindowsEsdCatalogCache
             $items = ConvertFrom-MCDProductsXml -ProductsXml $x -SourceFwlinkId $sourceId -ClientTypes $ClientTypes -IncludeUrl:$IncludeUrl -IncludeKey:$IncludeKey
             $itemsAll += @($items)
 
+            if ($UseWorProject -and $buildMajor)
+            {
+                $matchesExpected = @($items | Where-Object { $_.buildMajor -eq $buildMajor })
+                if ($matchesExpected.Count -lt 1)
+                {
+                    Write-Warning -Message "Source '$sourceId' did not yield any ESD items matching expected buildMajor '$buildMajor'. Keeping items anyway."
+                }
+            }
+
             $sources += [PSCustomObject]([ordered]@{
                     id                = $sourceId
-                    url               = $url
+                    windowsMajor      = $windowsMajor
+                    build             = $build
+                    buildMajor        = $buildMajor
+                    buildUbr          = $buildUbr
+                    date              = $date
+                    cabUrl            = $url
                     purpose           = $purpose
                     cabSha256         = $cabSha256
                     productsXmlSha256 = $productsXmlSha256
@@ -278,18 +690,33 @@ function Update-MCDWindowsEsdCatalogCache
         }
     }
 
-    $itemsSorted = @($dedupMap.Values) | Sort-Object -Property @(
-        @{ Expression = { $_.sha1 } },
-        @{ Expression = { $_.url } },
-        @{ Expression = { $_.fileName } },
-        @{ Expression = { $_.languageCode } },
+    $itemsSorted = @($dedupMap.Values) | Sort-Object -Descending -Property @(
+        @{ Expression = { $_.windowsRelease } },
+        @{ Expression = { $_.buildMajor } },
+        @{ Expression = { $_.buildUbr } },
         @{ Expression = { $_.architecture } },
-        @{ Expression = { $_.edition } }
+        @{ Expression = { $_.languageCode } },
+        @{ Expression = { $_.edition } },
+        @{ Expression = { $_.fileName } },
+        @{ Expression = { $_.sha1 } }
+    )
+
+    $latestFwlinks = @($latestFwlinksMap.Values) | Sort-Object -Descending -Property @(
+        @{ Expression = { [int]$_.windowsMajor } },
+        @{ Expression = { $_.fwlinkId } },
+        @{ Expression = { $_.fwlinkUrl } }
     )
 
     $catalog = [ordered]@{
         schemaVersion = 1
-        sources       = @($sources | Sort-Object -Property id)
+        latestFwlinks = $latestFwlinks
+        sources       = @($sources | Sort-Object -Descending -Property @(
+                @{ Expression = { [int]$_.windowsMajor } },
+                @{ Expression = { $_.buildMajor } },
+                @{ Expression = { $_.buildUbr } },
+                @{ Expression = { $_.date } },
+                @{ Expression = { $_.id } }
+            ))
         items         = $itemsSorted
     }
 

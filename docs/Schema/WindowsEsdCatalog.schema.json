@@ -2,9 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "MCD Windows ESD Catalog",
   "type": "object",
-  "required": ["schemaVersion", "sources", "items"],
+  "required": ["schemaVersion", "latestFwlinks", "sources", "items"],
   "properties": {
     "schemaVersion": { "type": "integer", "minimum": 1 },
+    "latestFwlinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["windowsMajor", "fwlinkId", "fwlinkUrl"],
+        "properties": {
+          "windowsMajor": { "type": "string" },
+          "fwlinkId": { "type": "string" },
+          "fwlinkUrl": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
     "sources": {
       "type": "array",
       "items": {
@@ -12,6 +25,12 @@
         "required": ["id"],
         "properties": {
           "id": { "type": "string" },
+          "windowsMajor": { "type": ["string", "null"] },
+          "build": { "type": ["string", "null"] },
+          "buildMajor": { "type": ["integer", "null"] },
+          "buildUbr": { "type": ["integer", "null"] },
+          "date": { "type": ["string", "null"] },
+          "cabUrl": { "type": ["string", "null"] },
           "url": { "type": ["string", "null"] },
           "purpose": { "type": ["string", "null"] },
           "cabSha256": { "type": ["string", "null"] },
@@ -32,6 +51,7 @@
           "windowsRelease": { "type": ["integer", "null"], "enum": [null, 10, 11] },
           "build": { "type": ["string", "null"] },
           "buildMajor": { "type": ["integer", "null"] },
+          "buildUbr": { "type": ["integer", "null"] },
           "architecture": { "type": ["string", "null"] },
           "languageCode": { "type": ["string", "null"] },
           "language": { "type": ["string", "null"] },

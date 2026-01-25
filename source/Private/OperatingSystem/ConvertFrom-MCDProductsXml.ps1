@@ -73,7 +73,7 @@ function ConvertFrom-MCDProductsXml
 
     $clientTypeRegex = ($ClientTypes | ForEach-Object { [regex]::Escape($_) }) -join '|'
 
-    $items = foreach ($f in $fileNodes)
+    $candidates = foreach ($f in $fileNodes)
     {
         if (-not $f)
         {
@@ -93,11 +93,6 @@ function ConvertFrom-MCDProductsXml
 
         $filePath = [string]$f.FilePath
         if (-not $filePath)
-        {
-            continue
-        }
-
-        if ($clientTypeRegex -and (-not ([regex]::IsMatch($filePath, $clientTypeRegex))))
         {
             continue
         }
@@ -133,14 +128,18 @@ function ConvertFrom-MCDProductsXml
         }
 
         $clientType = $null
-        $m = [regex]::Match($filePath, $clientTypeRegex)
-        if ($m.Success)
+        if ($clientTypeRegex)
         {
-            $clientType = $m.Value
+            $m = [regex]::Match($filePath, $clientTypeRegex)
+            if ($m.Success)
+            {
+                $clientType = $m.Value
+            }
         }
 
         $build = $null
         $buildMajor = $null
+        $buildUbr = $null
         $buildMatch = [regex]::Match($fileName, '(\d{5})\.(\d+)')
         if ($buildMatch.Success)
         {
@@ -149,6 +148,12 @@ function ConvertFrom-MCDProductsXml
             if ([int]::TryParse($buildMatch.Groups[1].Value, [ref]$tmpMajor))
             {
                 $buildMajor = $tmpMajor
+            }
+
+            [int]$tmpUbr = 0
+            if ([int]::TryParse($buildMatch.Groups[2].Value, [ref]$tmpUbr))
+            {
+                $buildUbr = $tmpUbr
             }
         }
 
@@ -165,6 +170,7 @@ function ConvertFrom-MCDProductsXml
             windowsRelease = $windowsRelease
             build          = $build
             buildMajor     = $buildMajor
+            buildUbr       = $buildUbr
             architecture   = $architecture
             languageCode   = $languageCode
             language       = $language
@@ -193,13 +199,28 @@ function ConvertFrom-MCDProductsXml
         [PSCustomObject]$out
     }
 
-    # Deterministic ordering.
-    $items | Sort-Object -Property @(
-        @{ Expression = { $_.sha1 } },
-        @{ Expression = { $_.url } },
-        @{ Expression = { $_.fileName } },
-        @{ Expression = { $_.languageCode } },
+    $items = @($candidates)
+    if ($clientTypeRegex)
+    {
+        $filtered = @($items | Where-Object { $_.url -and ([regex]::IsMatch([string]$_.url, $clientTypeRegex)) })
+
+        # Some older MCT catalogs don't include CLIENTCONSUMER/CLIENTBUSINESS patterns.
+        # If filtering yields nothing, fall back to returning all ESD candidates.
+        if ($filtered.Count -gt 0)
+        {
+            $items = $filtered
+        }
+    }
+
+    # Deterministic ordering (newest Windows/build first).
+    $items | Sort-Object -Descending -Property @(
+        @{ Expression = { $_.windowsRelease } },
+        @{ Expression = { $_.buildMajor } },
+        @{ Expression = { $_.buildUbr } },
         @{ Expression = { $_.architecture } },
-        @{ Expression = { $_.edition } }
+        @{ Expression = { $_.languageCode } },
+        @{ Expression = { $_.edition } },
+        @{ Expression = { $_.fileName } },
+        @{ Expression = { $_.sha1 } }
     )
 }
