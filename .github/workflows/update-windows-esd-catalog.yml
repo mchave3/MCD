@@ -1,0 +1,41 @@
+name: Update Windows ESD Catalog
+
+on:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore PowerShell dependencies
+        shell: pwsh
+        run: ./build.ps1 -ResolveDependency -Tasks noop
+
+      - name: Generate catalog
+        shell: pwsh
+        run: ./build.ps1 -Tasks Update_WindowsEsdCatalogCache
+
+      - name: Run unit tests (targeted)
+        shell: pwsh
+        run: ./build.ps1 -Tasks test -PesterPath tests/Unit/Private/ConvertFrom-MCDProductsXml.Tests.ps1,tests/Unit/Private/Update-MCDWindowsEsdCatalogCache.Tests.ps1
+
+      - name: Create pull request if changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: automation/windows-esd-catalog
+          delete-branch: true
+          commit-message: "Update Windows ESD catalog"
+          title: "Update Windows ESD catalog"
+          body: |
+            Daily refresh of `source/Cache/Operating System/WindowsESD.json` and `source/Cache/Operating System/WindowsESD.xml`.
+          add-paths: |
+            source/Cache/Operating System/WindowsESD.json
+            source/Cache/Operating System/WindowsESD.xml

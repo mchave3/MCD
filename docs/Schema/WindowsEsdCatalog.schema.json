@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCD Windows ESD Catalog",
+  "type": "object",
+  "required": ["schemaVersion", "sources", "items"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string" },
+          "url": { "type": ["string", "null"] },
+          "purpose": { "type": ["string", "null"] },
+          "cabSha256": { "type": ["string", "null"] },
+          "productsXmlSha256": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sourceFwlinkId", "fileName"],
+        "properties": {
+          "sourceFwlinkId": { "type": "string" },
+          "mctId": { "type": ["string", "null"] },
+          "clientType": { "type": ["string", "null"] },
+          "windowsRelease": { "type": ["integer", "null"], "enum": [null, 10, 11] },
+          "build": { "type": ["string", "null"] },
+          "buildMajor": { "type": ["integer", "null"] },
+          "architecture": { "type": ["string", "null"] },
+          "languageCode": { "type": ["string", "null"] },
+          "language": { "type": ["string", "null"] },
+          "edition": { "type": ["string", "null"] },
+          "fileName": { "type": "string" },
+          "sizeBytes": { "type": ["integer", "null"] },
+          "sha1": { "type": ["string", "null"] },
+          "isRetailOnly": { "type": ["boolean", "null"] },
+          "url": { "type": ["string", "null"] },
+          "key": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

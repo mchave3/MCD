@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MCT>
+  <Catalogs>
+    <Catalog>
+      <PublishedMedia>
+        <Files>
+          <File>
+            <FileName>Win11_23H2_English_x64.esd</FileName>
+            <FilePath>https://download.example.invalid/CLIENTCONSUMER_RET_x64FRE_en-us/Win11_23H2_English_x64.esd</FilePath>
+            <Sha1>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Sha1>
+            <Size>123</Size>
+            <Architecture>x64</Architecture>
+            <LanguageCode>en-us</LanguageCode>
+            <Language>English</Language>
+            <Edition>Professional</Edition>
+            <IsRetailOnly>false</IsRetailOnly>
+          </File>
+          <File>
+            <FileName>Win10_22H2_French_x64.esd</FileName>
+            <FilePath>https://download.example.invalid/CLIENTBUSINESS_VOL_x64FRE_fr-fr/Win10_22H2_French_x64.esd</FilePath>
+            <Sha1>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</Sha1>
+            <Size>456</Size>
+            <Architecture>x64</Architecture>
+            <LanguageCode>fr-fr</LanguageCode>
+            <Language>French</Language>
+            <Edition>Professional</Edition>
+            <IsRetailOnly>true</IsRetailOnly>
+          </File>
+          <File>
+            <FileName>NotAnEsd.iso</FileName>
+            <FilePath>https://download.example.invalid/CLIENTCONSUMER_RET_x64FRE_en-us/NotAnEsd.iso</FilePath>
+          </File>
+        </Files>
+      </PublishedMedia>
+    </Catalog>
+  </Catalogs>
+</MCT>
