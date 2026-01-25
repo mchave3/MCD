@@ -187,7 +187,8 @@ function Convert-RepoDocsHelpToMarkdown {
         }
     }
 
-    $md.ToString()
+    # Normalize file ending: exactly one trailing newline.
+    ($md.ToString().TrimEnd([char[]]@([char]13, [char]10)) + "`r`n")
 }
 
 function Convert-RepoDocsPathToPosix {
@@ -238,7 +239,7 @@ task Generate_Repo_Docs {
                 $md = Convert-RepoDocsHelpToMarkdown -Name $fn.Name -SourcePath $sourcePathText -Help $fn.Help -Parameters $fn.Parameters
 
                 $outPath = Join-Path -Path $t.Out -ChildPath "$($fn.Name).md"
-                Set-Content -Path $outPath -Value $md -Encoding utf8
+                Set-Content -Path $outPath -Value $md -Encoding utf8 -NoNewline
 
                 $functions += $fn.Name
             }
@@ -264,6 +265,6 @@ task Generate_Repo_Docs {
             }
         }
 
-        Set-Content -Path (Join-Path $t.Out 'README.md') -Value $index.ToString() -Encoding utf8
+        Set-Content -Path (Join-Path $t.Out 'README.md') -Value $index.ToString() -Encoding utf8 -NoNewline
     }
 }
