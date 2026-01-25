@@ -5,7 +5,7 @@ function Update-MCDWinPEProgress
     Updates the WinPE deployment UI with step and progress information.
 
     .DESCRIPTION
-    Updates named WPF controls in the WinPE MainWindow.xaml (progress bar,
+    Updates named WPF controls in the WinPE ProgressWindow.xaml (progress bar,
     current step text, step counter, and percent text). This provides the
     foundation for a TSBackground-like experience.
 

@@ -98,7 +98,7 @@ function Initialize-MCDWorkspaceLayout
         }
         NetworkTestHostName       = 'google.com'
         DhcpWaitSeconds           = 20
-        XamlMainWindowRelativePath = 'WinPE\\MainWindow.xaml'
+        XamlMainWindowRelativePath = 'WinPE\\ProgressWindow.xaml'
         XamlConnectivityWindowRelativePath = 'WinPE\\ConnectivityWindow.xaml'
         XamlWizardWindowRelativePath       = 'WinPE\\WizardWindow.xaml'
         UpdatedAt                 = (Get-Date).ToString('o')

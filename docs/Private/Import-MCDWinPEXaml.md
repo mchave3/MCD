@@ -23,7 +23,7 @@ Windows.Markup.XamlReader. Returns the resulting Window instance.
 ### Example 1
 
 ```powershell
-$window = Import-MCDWinPEXaml -XamlPath 'X:\\MCD\\Xaml\\WinPE\\MainWindow.xaml'
+$window = Import-MCDWinPEXaml -XamlPath 'X:\\MCD\\Xaml\\WinPE\\ProgressWindow.xaml'
 
 Loads the main WinPE window XAML and returns the Window object.
 ```

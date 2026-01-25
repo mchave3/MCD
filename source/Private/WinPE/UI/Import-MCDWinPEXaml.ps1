@@ -12,7 +12,7 @@ function Import-MCDWinPEXaml
     Full path to the XAML file to load as a WPF window.
 
     .EXAMPLE
-    $window = Import-MCDWinPEXaml -XamlPath 'X:\\MCD\\Xaml\\WinPE\\MainWindow.xaml'
+    $window = Import-MCDWinPEXaml -XamlPath 'X:\\MCD\\Xaml\\WinPE\\ProgressWindow.xaml'
 
     Loads the main WinPE window XAML and returns the Window object.
     #>

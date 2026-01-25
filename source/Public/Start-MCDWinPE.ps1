@@ -100,7 +100,7 @@ function Start-MCDWinPE
     }
     Write-MCDLog -Level Info -Message ("Wizard selection: Language='{0}', OS='{1}' ({2}), DriverPack='{3}', Disk='{4}'" -f $selection.ComputerLanguage, $osName, $osId, $selection.DriverPack, $diskNumber)
 
-    $relativeXaml = 'WinPE\\MainWindow.xaml'
+    $relativeXaml = 'WinPE\\ProgressWindow.xaml'
     if ($winpeConfig.XamlMainWindowRelativePath)
     {
         $relativeXaml = [string]$winpeConfig.XamlMainWindowRelativePath
