@@ -2,18 +2,19 @@ name: Update Windows ESD Catalog
 
 on:
   schedule:
-    - cron: "23 3 * * *"
+    - cron: "0 1 * * *"
   workflow_dispatch: {}
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   update:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Restore PowerShell dependencies
         shell: pwsh
@@ -23,19 +24,38 @@ jobs:
         shell: pwsh
         run: ./build.ps1 -Tasks Update_WindowsEsdCatalogCache
 
+      - name: Build module (ModuleBuilder)
+        shell: pwsh
+        run: ./build.ps1 -Tasks Build_Module_ModuleBuilder
+
       - name: Run unit tests (targeted)
         shell: pwsh
-        run: ./build.ps1 -Tasks test -PesterPath tests/Unit/Private/ConvertFrom-MCDProductsXml.Tests.ps1,tests/Unit/Private/Update-MCDWindowsEsdCatalogCache.Tests.ps1
+        run: |
+          ./build.ps1 -Tasks test -PesterPath @(
+            'tests/Unit/Private/ConvertFrom-MCDProductsXml.Tests.ps1',
+            'tests/Unit/Private/Update-MCDWindowsEsdCatalogCache.Tests.ps1'
+          )
 
-      - name: Create pull request if changed
-        uses: peter-evans/create-pull-request@v6
-        with:
-          branch: automation/windows-esd-catalog
-          delete-branch: true
-          commit-message: "Update Windows ESD catalog"
-          title: "Update Windows ESD catalog"
-          body: |
-            Daily refresh of `source/Cache/Operating System/WindowsESD.json` and `source/Cache/Operating System/WindowsESD.xml`.
-          add-paths: |
-            source/Cache/Operating System/WindowsESD.json
-            source/Cache/Operating System/WindowsESD.xml
+      - name: Commit to main if changed
+        shell: pwsh
+        run: |
+          $paths = @(
+            'source/Cache/Operating System/WindowsESD.json',
+            'source/Cache/Operating System/WindowsESD.xml'
+          )
+
+          if (-not (git status --porcelain -- $paths)) {
+            Write-Host 'No catalog changes detected; skipping commit.'
+            exit 0
+          }
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A -- $paths
+
+          $latestDate = (Get-Item -Path $paths -ErrorAction SilentlyContinue |
+            Sort-Object -Property LastWriteTimeUtc -Descending |
+            Select-Object -First 1 -ExpandProperty LastWriteTimeUtc).ToString('yyyy-MM-dd')
+
+          git commit -m "[$latestDate] Update Windows ESD catalog"
+          git push origin HEAD:main
