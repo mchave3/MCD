@@ -1,0 +1,44 @@
+name: Lint
+
+on:
+  pull_request:
+    paths:
+      - 'source/**/*.ps1'
+      - 'source/**/*.psm1'
+      - 'source/**/*.psd1'
+      - 'tests/**/*.ps1'
+      - '.vscode/analyzersettings.psd1'
+      - 'build.yaml'
+      - 'build.ps1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  Lint:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Restore PowerShell dependencies
+        shell: pwsh
+        run: ./build.ps1 -ResolveDependency -Tasks noop
+
+      - name: Build module
+        shell: pwsh
+        run: ./build.ps1 -Tasks Build_Module_ModuleBuilder
+
+      - name: Run PSScriptAnalyzer via Pester
+        shell: pwsh
+        run: ./build.ps1 -Tasks test -PesterTag TestQuality
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-test-results
+          path: output/testResults/*.xml
+          retention-days: 7
