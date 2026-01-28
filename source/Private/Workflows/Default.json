@@ -1,0 +1,129 @@
+{
+  "id": "mcd-default-workflow",
+  "name": "MCD Default Deployment",
+  "description": "Default MCD deployment workflow with validation, disk preparation, environment setup, and deployment steps.",
+  "version": "1.0.0",
+  "author": "MCD",
+  "amd64": true,
+  "arm64": true,
+  "default": true,
+  "steps": [
+    {
+      "name": "Validate Selection",
+      "description": "Validate wizard selection before deployment",
+      "command": "Step-MCDValidateSelection",
+      "args": [],
+      "parameters": {},
+      "rules": {
+        "skip": false,
+        "runinfullos": false,
+        "runinwinpe": true,
+        "architecture": ["amd64", "arm64"],
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "retryDelay": 5
+        },
+        "continueOnError": false
+      }
+    },
+    {
+      "name": "Prepare Disk",
+      "description": "Prepares the target disk for Windows deployment",
+      "command": "Step-MCDPrepareDisk",
+      "args": [],
+      "parameters": {
+        "DiskNumber": 0,
+        "DiskPolicy": "Clean"
+      },
+      "rules": {
+        "skip": false,
+        "runinfullos": false,
+        "runinwinpe": true,
+        "architecture": ["amd64", "arm64"],
+        "retry": {
+          "enabled": true,
+          "maxAttempts": 3,
+          "retryDelay": 5
+        },
+        "continueOnError": false
+      }
+    },
+    {
+      "name": "Copy WinPE Logs",
+      "description": "Copies WinPE logs to OS partition before reboot",
+      "command": "Step-MCDCopyWinPELogs",
+      "args": [],
+      "parameters": {},
+      "rules": {
+        "skip": false,
+        "runinfullos": false,
+        "runinwinpe": true,
+        "architecture": ["amd64", "arm64"],
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "retryDelay": 5
+        },
+        "continueOnError": false
+      }
+    },
+    {
+      "name": "Prepare Environment",
+      "description": "Prepares the deployment environment",
+      "command": "Step-MCDPrepareEnvironment",
+      "args": [],
+      "parameters": {},
+      "rules": {
+        "skip": false,
+        "runinfullos": false,
+        "runinwinpe": true,
+        "architecture": ["amd64", "arm64"],
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "retryDelay": 5
+        },
+        "continueOnError": false
+      }
+    },
+    {
+      "name": "Deploy Windows",
+      "description": "Deploys the Windows image to the prepared disk",
+      "command": "Step-MCDDeployWindows",
+      "args": [],
+      "parameters": {},
+      "rules": {
+        "skip": false,
+        "runinfullos": true,
+        "runinwinpe": false,
+        "architecture": ["amd64", "arm64"],
+        "retry": {
+          "enabled": true,
+          "maxAttempts": 3,
+          "retryDelay": 5
+        },
+        "continueOnError": false
+      }
+    },
+    {
+      "name": "Complete Deployment",
+      "description": "Completes the deployment process",
+      "command": "Step-MCDCompleteDeployment",
+      "args": [],
+      "parameters": {},
+      "rules": {
+        "skip": false,
+        "runinfullos": true,
+        "runinwinpe": true,
+        "architecture": ["amd64", "arm64"],
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "retryDelay": 5
+        },
+        "continueOnError": false
+      }
+    }
+  ]
+}
