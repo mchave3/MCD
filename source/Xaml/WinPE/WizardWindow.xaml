@@ -27,6 +27,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -36,22 +37,25 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontSize="16" FontWeight="SemiBold" Text="Session options" />
+                
+                <TextBlock x:Name="WorkflowLabel" Grid.Row="1" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Workflow" Visibility="Collapsed" />
+                <ComboBox x:Name="WorkflowCombo" Grid.Row="1" Grid.Column="1" Margin="0,16,0,0" Height="34" DisplayMemberPath="name" Visibility="Collapsed" />
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Computer language" />
-                <ComboBox x:Name="ComputerLanguageCombo" Grid.Row="1" Grid.Column="1" Margin="0,16,0,0" Height="34" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Computer language" />
+                <ComboBox x:Name="ComputerLanguageCombo" Grid.Row="2" Grid.Column="1" Margin="0,16,0,0" Height="34" />
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Operating system" />
-                <ComboBox x:Name="OperatingSystemCombo" Grid.Row="2" Grid.Column="1" Margin="0,16,0,0" Height="34" DisplayMemberPath="DisplayName" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Operating system" />
+                <ComboBox x:Name="OperatingSystemCombo" Grid.Row="3" Grid.Column="1" Margin="0,16,0,0" Height="34" DisplayMemberPath="DisplayName" />
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Driver pack" />
-                <ComboBox x:Name="DriverPackCombo" Grid.Row="3" Grid.Column="1" Margin="0,16,0,0" Height="34" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Driver pack" />
+                <ComboBox x:Name="DriverPackCombo" Grid.Row="4" Grid.Column="1" Margin="0,16,0,0" Height="34" />
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Target disk" />
-                <ComboBox x:Name="TargetDiskCombo" Grid.Row="4" Grid.Column="1" Margin="0,16,0,0" Height="34" DisplayMemberPath="DisplayName" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,16,16,0" VerticalAlignment="Center" Text="Target disk" />
+                <ComboBox x:Name="TargetDiskCombo" Grid.Row="5" Grid.Column="1" Margin="0,16,0,0" Height="34" DisplayMemberPath="DisplayName" />
 
-                <CheckBox x:Name="ConfirmWipeCheckBox" Grid.Row="5" Grid.ColumnSpan="2" Margin="0,18,0,0" Content="I understand this will erase data on the selected disk" />
+                <CheckBox x:Name="ConfirmWipeCheckBox" Grid.Row="6" Grid.ColumnSpan="2" Margin="0,18,0,0" Content="I understand this will erase data on the selected disk" />
 
-                <TextBlock x:Name="WizardStatusText" Grid.Row="6" Grid.ColumnSpan="2" Margin="0,18,0,0" Opacity="0.75" TextWrapping="Wrap" />
+                <TextBlock x:Name="WizardStatusText" Grid.Row="7" Grid.ColumnSpan="2" Margin="0,18,0,0" Opacity="0.75" TextWrapping="Wrap" />
             </Grid>
         </Border>
 

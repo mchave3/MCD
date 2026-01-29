@@ -50,6 +50,12 @@ function Update-MCDWindowsEsdCatalogCache
     .EXAMPLE
     Update-MCDWindowsEsdCatalogCache -OutputDirectory '.\source\Cache\Operating System'
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidDefaultValueSwitchParameter', '', Justification = 'Switch defaults are intentional for typical catalog generation')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Parameters are used in nested function closures')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '', Justification = 'Empty catch blocks intentionally ignore parse errors for resilient processing')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Nested function naming follows domain conventions')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '', Justification = 'File output is expected behavior; no destructive system changes')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Variables used for conditional logic and metadata extraction')]
     [CmdletBinding()]
     param
     (

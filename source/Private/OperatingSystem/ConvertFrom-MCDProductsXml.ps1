@@ -30,6 +30,7 @@ function ConvertFrom-MCDProductsXml
     ConvertFrom-MCDProductsXml -ProductsXml $x -SourceFwlinkId 2156292 -ClientTypes @('CLIENTCONSUMER','CLIENTBUSINESS')
     #>
     [CmdletBinding()]
+    [OutputType([System.Object[]])]
     param
     (
         [Parameter(Mandatory = $true)]

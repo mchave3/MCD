@@ -26,6 +26,7 @@ function Start-MCDWizard
 
     Starts the wizard and returns a selection object.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'selectedWorkflow', Justification = 'Variable used for validation logic within scriptblock')]
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([pscustomobject])]
     param
@@ -84,11 +85,50 @@ function Start-MCDWizard
     # results do not have a .Count property.
     $diskCandidates = @(Get-MCDTargetDiskCandidate -ExcludeBusTypes $diskExcludeBusTypes)
 
+    # Workflow discovery
+    $builtInWorkflows = Initialize-MCDWorkflowTasks
+    $customWorkflows = @()
+
+    $volumes = Get-MCDExternalVolume
+    foreach ($vol in $volumes)
+    {
+        $profilePath = Join-Path -Path $vol.Root -ChildPath 'MCD\Profiles'
+        if (Test-Path -Path $profilePath)
+        {
+            $customWorkflowFiles = Get-ChildItem -Path $profilePath -Filter 'workflow.json' -Recurse -File -ErrorAction SilentlyContinue
+            foreach ($file in $customWorkflowFiles)
+            {
+                try
+                {
+                    $content = Get-Content -Path $file.FullName -Raw -ErrorAction Stop
+                    $wf = $content | ConvertFrom-Json -ErrorAction Stop
+                    $customWorkflows += $wf
+                }
+                catch
+                {
+                    Write-Warning -Message "Skipping invalid workflow JSON at '$($file.FullName)': $($_.Exception.Message)"
+                }
+            }
+        }
+    }
+
+    $allWorkflows = @()
+    if ($builtInWorkflows) { $allWorkflows += $builtInWorkflows }
+    if ($customWorkflows) { $allWorkflows += $customWorkflows }
+
+    # Ensure default is first
+    $defaultWorkflow = $allWorkflows | Where-Object { $_.default -eq $true } | Select-Object -First 1
+    if (-not $defaultWorkflow)
+    {
+        $defaultWorkflow = $builtInWorkflows | Select-Object -First 1
+    }
+
     if ($NoUI)
     {
         $os = $operatingSystems | Select-Object -First 1
         $disk = $diskCandidates | Select-Object -First 1
         return [PSCustomObject]@{
+            Workflow         = $defaultWorkflow
             ComputerLanguage = ($computerLanguages | Select-Object -First 1)
             OperatingSystem  = $os
             DriverPack       = ($driverPacks | Select-Object -First 1)
@@ -105,6 +145,8 @@ function Start-MCDWizard
     $xamlPath = Join-Path -Path $XamlRoot -ChildPath $relativeXaml
     $window = Import-MCDWinPEXaml -XamlPath $xamlPath
 
+    $workflowCombo = $window.FindName('WorkflowCombo')
+    $workflowLabel = $window.FindName('WorkflowLabel')
     $languageCombo = $window.FindName('ComputerLanguageCombo')
     $osCombo = $window.FindName('OperatingSystemCombo')
     $driverCombo = $window.FindName('DriverPackCombo')
@@ -113,6 +155,33 @@ function Start-MCDWizard
     $statusText = $window.FindName('WizardStatusText')
     $okButton = $window.FindName('WizardOkButton')
     $cancelButton = $window.FindName('WizardCancelButton')
+
+    if ($workflowCombo)
+    {
+        if ($customWorkflows.Count -gt 0)
+        {
+            if ($workflowLabel) { $workflowLabel.Visibility = 'Visible' }
+            $workflowCombo.Visibility = 'Visible'
+            $workflowCombo.ItemsSource = $allWorkflows
+            # Select default or first available if nothing is selected
+            if (-not $workflowCombo.SelectedItem)
+            {
+                if ($defaultWorkflow)
+                {
+                     $workflowCombo.SelectedItem = $defaultWorkflow
+                }
+                elseif ($allWorkflows.Count -gt 0)
+                {
+                     $workflowCombo.SelectedIndex = 0
+                }
+            }
+        }
+        else
+        {
+            if ($workflowLabel) { $workflowLabel.Visibility = 'Collapsed' }
+            $workflowCombo.Visibility = 'Collapsed'
+        }
+    }
 
     if ($languageCombo)
     {
@@ -174,6 +243,7 @@ function Start-MCDWizard
     }
 
     $validate = {
+        $selectedWorkflow = if ($workflowCombo -and $workflowCombo.Visibility -eq 'Visible') { $workflowCombo.SelectedItem } else { $defaultWorkflow }
         $selectedLanguage = if ($languageCombo) { $languageCombo.SelectedItem } else { $null }
         $selectedOS = if ($osCombo) { $osCombo.SelectedItem } else { $null }
         $selectedDisk = if ($diskCombo) { $diskCombo.SelectedItem } else { $null }
@@ -219,6 +289,10 @@ function Start-MCDWizard
         }
     }
 
+    if ($workflowCombo)
+    {
+        $workflowCombo.Add_SelectionChanged({ & $validate })
+    }
     if ($languageCombo)
     {
         $languageCombo.Add_SelectionChanged({ & $validate })
@@ -241,6 +315,7 @@ function Start-MCDWizard
     {
         $okButton.Add_Click({
                 $selection = [PSCustomObject]@{
+                    Workflow         = if ($workflowCombo -and $workflowCombo.Visibility -eq 'Visible') { $workflowCombo.SelectedItem } else { $defaultWorkflow }
                     ComputerLanguage = if ($languageCombo) { $languageCombo.SelectedItem } else { $null }
                     OperatingSystem  = if ($osCombo) { $osCombo.SelectedItem } else { $null }
                     DriverPack       = if ($driverCombo) { $driverCombo.SelectedItem } else { $null }

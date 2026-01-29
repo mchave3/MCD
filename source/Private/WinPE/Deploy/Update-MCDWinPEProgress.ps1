@@ -71,28 +71,47 @@ function Update-MCDWinPEProgress
         return
     }
 
-    $stepCounter = $Window.FindName('StepCounterText')
-    if ($stepCounter)
-    {
-        $stepCounter.Text = "Step: $StepIndex of $StepCount"
+    # UI update logic as a scriptblock for Dispatcher-safe handling
+    $updateScript = {
+        param($w, $name, $idx, $cnt, $pct, $indet)
+        $stepCounter = $w.FindName('StepCounterText')
+        if ($stepCounter)
+        {
+            $stepCounter.Text = "Step: $idx of $cnt"
+        }
+
+        $currentStep = $w.FindName('CurrentStepText')
+        if ($currentStep)
+        {
+            $currentStep.Text = $name
+        }
+
+        $progress = $w.FindName('DeploymentProgressBar')
+        if ($progress)
+        {
+            $progress.IsIndeterminate = [bool]$indet
+            $progress.Value = $pct
+        }
+
+        $percentText = $w.FindName('ProgressPercentText')
+        if ($percentText)
+        {
+            $percentText.Text = "$pct %"
+        }
     }
 
-    $currentStep = $Window.FindName('CurrentStepText')
-    if ($currentStep)
+    # Check if we need Dispatcher invocation (running on background thread)
+    if ($Window.Dispatcher -and -not $Window.Dispatcher.CheckAccess())
     {
-        $currentStep.Text = $StepName
+        # Create Action delegate that captures our values for Dispatcher.Invoke
+        $updateAction = [System.Action]{
+            & $updateScript $Window $StepName $StepIndex $StepCount $Percent $Indeterminate
+        }
+        $Window.Dispatcher.Invoke($updateAction)
     }
-
-    $progress = $Window.FindName('DeploymentProgressBar')
-    if ($progress)
+    else
     {
-        $progress.IsIndeterminate = [bool]$Indeterminate
-        $progress.Value = $Percent
-    }
-
-    $percentText = $Window.FindName('ProgressPercentText')
-    if ($percentText)
-    {
-        $percentText.Text = "${Percent} %"
+        # Direct execution on UI thread
+        & $updateScript $Window $StepName $StepIndex $StepCount $Percent $Indeterminate
     }
 }

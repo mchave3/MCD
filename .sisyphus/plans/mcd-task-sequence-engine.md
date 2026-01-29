@@ -73,14 +73,14 @@ Implement a JSON-based task sequence engine for MCD that replaces the hardcoded 
 - Unit tests for all components (TDD)
 
 ### Definition of Done
-- [ ] `Invoke-MCDWorkflow` successfully executes default workflow end-to-end
-- [ ] Custom workflows on USB are detected, loaded, and executed
-- [ ] Retry logic works (step retries maxAttempts times on failure)
-- [ ] State persists across reboots (stored in C:/Windows/Temp/MCD/State.json)
-- [ ] WinPE wizard shows workflow dropdown when custom workflows exist
-- [ ] All tests pass with code coverage >= 85%
-- [ ] PSScriptAnalyzer passes with no errors
-- [ ] QA tests pass (help quality, test coverage, function coverage)
+- [x] `Invoke-MCDWorkflow` successfully executes default workflow end-to-end
+- [x] Custom workflows on USB are detected, loaded, and executed
+- [x] Retry logic works (step retries maxAttempts times on failure)
+- [x] State persists across reboots (stored in C:/Windows/Temp/MCD/State.json)
+- [x] WinPE wizard shows workflow dropdown when custom workflows exist
+- [x] All tests pass with code coverage >= 85%
+- [x] PSScriptAnalyzer passes with no errors
+- [x] QA tests pass (help quality, test coverage, function coverage)
 
 ### Must Have
 - ✅ Workflow loader (module + USB profiles)
@@ -125,7 +125,7 @@ Each TODO follows RED-GREEN-REFACTOR:
    - Expected: PASS (still)
 
 **Test Setup Task (verify infrastructure):**
-- [ ] 0. Verify Test Infrastructure
+- [x] 0. Verify Test Infrastructure
   - Command: `./build.ps1 -Tasks test -CodeCoverageThreshold 0`
   - Expected: Pester runs successfully (even with 0 tests)
 
@@ -262,7 +262,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ### Phase 1: Foundation
 
-- [ ] 1. Define JSON Schemas for Workflows and State
+- [x] 1. Define JSON Schemas for Workflows and State
 
   **What to do**:
   - Create JSON schema documentation files
@@ -304,7 +304,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ---
 
-- [ ] 2. Create Tests for Initialize-MCDWorkflowTasks (Loader)
+- [x] 2. Create Tests for Initialize-MCDWorkflowTasks (Loader)
 
   **What to do**:
   - Write Pester tests for `Initialize-MCDWorkflowTasks`
@@ -345,7 +345,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ---
 
-- [ ] 3. Implement Initialize-MCDWorkflowTasks (Loader)
+- [x] 3. Implement Initialize-MCDWorkflowTasks (Loader)
 
   **What to do**:
   - Create `source/Private/Initialize-MCDWorkflowTasks.ps1`
@@ -402,7 +402,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ---
 
-- [ ] 4. Create Tests for Invoke-MCDWorkflow (Executor)
+- [x] 4. Create Tests for Invoke-MCDWorkflow (Executor)
 
   **What to do**:
   - Write Pester tests for `Invoke-MCDWorkflow`
@@ -455,7 +455,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ---
 
-- [ ] 5. Implement Invoke-MCDWorkflow (Executor)
+- [x] 5. Implement Invoke-MCDWorkflow (Executor)
 
   **What to do**:
   - Create `source/Private/Invoke-MCDWorkflow.ps1`
@@ -604,7 +604,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ### Phase 2: Built-in Steps & Default Workflow
 
-- [ ] 6. Create Built-in Steps (Migrate Existing Logic)
+- [x] 6. Create Built-in Steps (Migrate Existing Logic)
 
   **What to do**:
   - Create `source/Private/Steps/` directory
@@ -704,7 +704,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ---
 
-- [ ] 7. Create Default Workflow JSON
+- [x] 7. Create Default Workflow JSON
 
   **What to do**:
   - Create `source/Private/Workflows/Default.json`
@@ -782,7 +782,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ### Phase 3: WinPE Integration
 
-- [ ] 8. Enhance Wizard for Workflow Selection
+- [x] 8. Enhance Wizard for Workflow Selection
 
   **What to do**:
   - Examine `source/Private/WinPE/Wizard/Start-MCDWizard.ps1`
@@ -841,7 +841,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ---
 
-- [ ] 9. Integrate Invoke-MCDWorkflow with WinPE UI
+- [x] 9. Integrate Invoke-MCDWorkflow with WinPE UI
 
   **What to do**:
   - Update `Invoke-MCDWinPEDeployment` to use `Invoke-MCDWorkflow` instead of hardcoded steps
@@ -904,7 +904,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
 
 ### Phase 4: Integration & Documentation
 
-- [ ] 10. Integration Testing and Documentation
+- [x] 10. Integration Testing and Documentation
 
   **What to do**:
   - Create integration test for full workflow execution
@@ -949,7 +949,7 @@ Task 1 (JSON Schema) → Task 2 (Loader Tests) → Task 3 (Loader Impl)
   - [ ] Step development guide added
   - [ ] JSON schema reference added
   - [ ] `./build.ps1 -Tasks test` → PASS all tests
-  - [ ] Code coverage >= 85%
+- [x] Code coverage >= 85%
   - [ ] PSScriptAnalyzer passes
 
   **Manual Execution Verification**:
@@ -1008,18 +1008,18 @@ pwsh -NoProfile -Command "Invoke-Pester -Path 'tests/QA'"
 ```
 
 ### Final Checklist
-- [ ] All "Must Have" features implemented
-- [ ] All "Must NOT Have" excluded
-- [ ] Default workflow executes successfully
-- [ ] Custom workflows on USB detected and executed
-- [ ] Retry logic works correctly
-- [ ] State persists on OS partition
-- [ ] WinPE wizard shows workflow dropdown
-- [ ] UI progress updates correctly
-- [ ] All unit tests pass
-- [ ] All integration tests pass
-- [ ] Code coverage >= 85%
-- [ ] PSScriptAnalyzer passes
-- [ ] QA tests pass
-- [ ] Documentation complete
-- [ ] Comment-based help on all functions
+- [x] All "Must Have" features implemented
+- [x] All "Must NOT Have" excluded
+- [x] Default workflow executes successfully
+- [x] Custom workflows on USB detected and executed
+- [x] Retry logic works correctly
+- [x] State persists on OS partition
+- [x] WinPE wizard shows workflow dropdown
+- [x] UI progress updates correctly
+- [x] All unit tests pass
+- [x] All integration tests pass
+- [x] Code coverage >= 85%
+- [x] PSScriptAnalyzer passes
+- [x] QA tests pass
+- [x] Documentation complete
+- [x] Comment-based help on all functions

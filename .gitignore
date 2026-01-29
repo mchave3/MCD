@@ -18,3 +18,9 @@ source/Examples/
 markdownissues.txt
 node_modules
 package-lock.json
+
+# OhMyOpenCode tooling artifacts
+.sisyphus
+ .sisyphus
+NUL
+

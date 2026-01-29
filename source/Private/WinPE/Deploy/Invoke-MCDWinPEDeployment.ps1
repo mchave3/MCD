@@ -2,25 +2,25 @@ function Invoke-MCDWinPEDeployment
 {
     <#
     .SYNOPSIS
-    Runs the WinPE deployment workflow steps (non-destructive baseline).
+    Runs the WinPE deployment workflow steps using the workflow executor.
 
     .DESCRIPTION
-    Executes a sequence of deployment steps while updating the WinPE UI. This is
-    a safe baseline runner that performs only non-destructive actions (logging
-    and validation). Disk partitioning and applying images will be added once
-    the target disk selection policy is defined.
+    Executes the deployment workflow via Invoke-MCDWorkflow while updating the WinPE
+    UI. The workflow is retrieved from the Selection object (set by the wizard) or
+    falls back to the default workflow loaded by Initialize-MCDWorkflowTasks.
 
     .PARAMETER Window
     The WinPE main window that will be updated during the deployment workflow.
 
     .PARAMETER Selection
-    The selection object returned by Start-MCDWizard including OS and language.
+    The selection object returned by Start-MCDWizard including OS, language, and Workflow.
 
     .EXAMPLE
     Invoke-MCDWinPEDeployment -Window $window -Selection $selection
 
-    Runs the baseline deployment runner.
+    Runs the deployment workflow specified in the selection.
     #>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([void])]
     param
@@ -45,71 +45,55 @@ function Invoke-MCDWinPEDeployment
     }
     Write-MCDLog -Level Info -Message ("Deployment selection: OS='{0}' ({1}), Language='{2}', DriverPack='{3}'" -f $osName, $osId, $Selection.ComputerLanguage, $Selection.DriverPack)
 
-    $steps = @(
-        @{ Name = 'Validating selection'; Action = { return $true } },
-        @{ Name = 'Preparing disk'; Action = {
-                if (-not $Selection.TargetDisk)
-                {
-                    Write-MCDLog -Level Verbose -Message 'No TargetDisk provided; skipping disk preparation.'
-                    return $true
-                }
-
-                $diskNumber = $Selection.TargetDisk.DiskNumber
-                if ($null -eq $diskNumber)
-                {
-                    Write-MCDLog -Level Verbose -Message 'TargetDisk does not include DiskNumber; skipping disk preparation.'
-                    return $true
-                }
-
-                $diskPolicy = $null
-                if ($Selection.WinPEConfig -and $Selection.WinPEConfig.DiskPolicy)
-                {
-                    $diskPolicy = $Selection.WinPEConfig.DiskPolicy
-                }
-                if (-not $diskPolicy)
-                {
-                    $diskPolicy = [pscustomobject]@{ AllowDestructiveActions = $false }
-                }
-
-                $layout = Initialize-MCDTargetDisk -DiskNumber $diskNumber -DiskPolicy $diskPolicy
-                $Selection | Add-Member -NotePropertyName DiskLayout -NotePropertyValue $layout -Force
-                return $true
-            } },
-        @{ Name = 'Preparing deployment environment'; Action = { return $true } },
-        @{ Name = 'Ready to deploy (imaging steps pending)'; Action = { return $true } }
-    )
-
-    $stepCount = $steps.Count
-    for ($i = 0; $i -lt $stepCount; $i++)
+    # Determine the workflow to execute
+    $workflow = $Selection.Workflow
+    if (-not $workflow)
     {
-        $step = $steps[$i]
-        $stepIndex = $i + 1
-        $percent = [math]::Floor(($stepIndex - 1) / [double]$stepCount * 100)
-
-        $Window.Dispatcher.Invoke([action]{
-                Update-MCDWinPEProgress -Window $Window -StepName $step.Name -StepIndex $stepIndex -StepCount $stepCount -Percent $percent -Indeterminate
-            })
-        Write-MCDLog -Level Info -Message "Deploy step [$stepIndex/$stepCount]: $($step.Name)"
-
-        try
+        Write-MCDLog -Level Info -Message 'No workflow in selection; loading default workflow via Initialize-MCDWorkflowTasks'
+        # Force array semantics for Windows PowerShell 5.1 where single PSCustomObject
+        # results do not have a .Count property.
+        $allWorkflows = @(Initialize-MCDWorkflowTasks)
+        $workflow = $allWorkflows | Where-Object { $_.default -eq $true } | Select-Object -First 1
+        if (-not $workflow -and $allWorkflows.Count -gt 0)
         {
-            & $step.Action | Out-Null
+            $workflow = $allWorkflows | Select-Object -First 1
         }
-        catch
-        {
-            $errorMessage = $_.Exception.Message
-            Write-MCDLog -Level Error -Message "Deploy step failed: $errorMessage"
-
-            $Window.Dispatcher.Invoke([action]{
-                    Update-MCDWinPEProgress -Window $Window -StepName "Failed: $errorMessage" -StepIndex $stepIndex -StepCount $stepCount -Percent $percent
-                })
-
-            throw
-        }
-        Start-Sleep -Milliseconds 200
     }
 
-    $Window.Dispatcher.Invoke([action]{
-            Update-MCDWinPEProgress -Window $Window -StepName 'Completed (baseline)' -StepIndex $stepCount -StepCount $stepCount -Percent 100
-        })
+    if (-not $workflow)
+    {
+        $errorMessage = 'No workflow available to execute'
+        Write-MCDLog -Level Error -Message $errorMessage
+        $Window.Dispatcher.Invoke([action]{
+                Update-MCDWinPEProgress -Window $Window -StepName "Failed: $errorMessage" -StepIndex 1 -StepCount 1 -Percent 0
+            })
+        throw $errorMessage
+    }
+
+    Write-MCDLog -Level Info -Message "Executing workflow: $($workflow.name)"
+
+    try
+    {
+        # Execute the workflow - Update-MCDWinPEProgress is now Dispatcher-safe
+        Invoke-MCDWorkflow -WorkflowObject $workflow -Window $Window
+
+        # Update UI to show completion
+        $stepCount = if ($workflow.steps) { $workflow.steps.Count } else { 1 }
+        $Window.Dispatcher.Invoke([action]{
+                Update-MCDWinPEProgress -Window $Window -StepName 'Completed' -StepIndex $stepCount -StepCount $stepCount -Percent 100
+            })
+    }
+    catch
+    {
+        $errorMessage = $_.Exception.Message
+        Write-MCDLog -Level Error -Message "Workflow execution failed: $errorMessage"
+
+        $stepIndex = if ($global:MCDWorkflowCurrentStepIndex) { $global:MCDWorkflowCurrentStepIndex } else { 1 }
+        $stepCount = if ($workflow.steps) { $workflow.steps.Count } else { 1 }
+        $Window.Dispatcher.Invoke([action]{
+                Update-MCDWinPEProgress -Window $Window -StepName "Failed: $errorMessage" -StepIndex $stepIndex -StepCount $stepCount -Percent 0
+            })
+
+        throw
+    }
 }
