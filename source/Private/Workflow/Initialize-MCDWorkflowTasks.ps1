@@ -55,10 +55,10 @@ function Initialize-MCDWorkflowTasks
     $workflows = @()
 
     # Search order:
-    # 1. <ModuleBase>\Private\Workflows\*.json (plan-aligned canonical location)
+    # 1. <ModuleBase>\Private\Workflow\Data\*.json (canonical location)
     # 2. <ModuleBase>\Workflows\*.json (fallback for unit tests that mock ModuleBase)
     $workflowSearchPaths = @(
-        (Join-Path -Path $moduleBase -ChildPath 'Private\Workflows'),
+        (Join-Path -Path $moduleBase -ChildPath 'Private\Workflow\Data'),
         (Join-Path -Path $moduleBase -ChildPath 'Workflows')
     )
 
