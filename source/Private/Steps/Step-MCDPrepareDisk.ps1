@@ -1,29 +1,29 @@
+<#
+.SYNOPSIS
+Prepares the target disk for Windows deployment.
+
+.DESCRIPTION
+Clears and initializes the target disk with a UEFI/GPT partition layout suitable
+for Windows deployment. Reads the target disk and disk policy from the global
+workflow context. If no target disk is specified or destructive actions are
+disabled, the step completes without making changes.
+
+The partition layout created:
+- EFI System Partition (FAT32, 260MB)
+- Microsoft Reserved Partition (MSR, 16MB)
+- Windows partition (NTFS, remaining space)
+
+.EXAMPLE
+Step-MCDPrepareDisk
+
+Prepares the target disk from the workflow context selection.
+
+.NOTES
+Uses $global:MCDWorkflowContext for selection and disk policy. Delegates to
+Initialize-MCDTargetDisk for the actual disk operations.
+#>
 function Step-MCDPrepareDisk
 {
-    <#
-    .SYNOPSIS
-    Prepares the target disk for Windows deployment.
-
-    .DESCRIPTION
-    Clears and initializes the target disk with a UEFI/GPT partition layout suitable
-    for Windows deployment. Reads the target disk and disk policy from the global
-    workflow context. If no target disk is specified or destructive actions are
-    disabled, the step completes without making changes.
-
-    The partition layout created:
-    - EFI System Partition (FAT32, 260MB)
-    - Microsoft Reserved Partition (MSR, 16MB)
-    - Windows partition (NTFS, remaining space)
-
-    .EXAMPLE
-    Step-MCDPrepareDisk
-
-    Prepares the target disk from the workflow context selection.
-
-    .NOTES
-    Uses $global:MCDWorkflowContext for selection and disk policy. Delegates to
-    Initialize-MCDTargetDisk for the actual disk operations.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([bool])]

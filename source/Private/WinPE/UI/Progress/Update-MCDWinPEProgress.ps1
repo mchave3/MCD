@@ -1,37 +1,37 @@
+<#
+.SYNOPSIS
+Updates the WinPE deployment UI with step and progress information.
+
+.DESCRIPTION
+Updates named WPF controls in the WinPE ProgressWindow.xaml (progress bar,
+current step text, step counter, and percent text). This provides the
+foundation for a TSBackground-like experience.
+
+.PARAMETER Window
+The main WPF Window instance that contains the named UI controls.
+
+.PARAMETER StepName
+Friendly name of the current step.
+
+.PARAMETER StepIndex
+1-based index of the current step.
+
+.PARAMETER StepCount
+Total number of steps in the overall deployment workflow.
+
+.PARAMETER Percent
+Percent complete for the overall workflow (0-100).
+
+.PARAMETER Indeterminate
+When set, displays an indeterminate progress bar.
+
+.EXAMPLE
+Update-MCDWinPEProgress -Window $window -StepName 'Downloading image' -StepIndex 2 -StepCount 5 -Percent 20
+
+Updates the UI to reflect step 2 of 5 at 20%.
+#>
 function Update-MCDWinPEProgress
 {
-    <#
-    .SYNOPSIS
-    Updates the WinPE deployment UI with step and progress information.
-
-    .DESCRIPTION
-    Updates named WPF controls in the WinPE ProgressWindow.xaml (progress bar,
-    current step text, step counter, and percent text). This provides the
-    foundation for a TSBackground-like experience.
-
-    .PARAMETER Window
-    The main WPF Window instance that contains the named UI controls.
-
-    .PARAMETER StepName
-    Friendly name of the current step.
-
-    .PARAMETER StepIndex
-    1-based index of the current step.
-
-    .PARAMETER StepCount
-    Total number of steps in the overall deployment workflow.
-
-    .PARAMETER Percent
-    Percent complete for the overall workflow (0-100).
-
-    .PARAMETER Indeterminate
-    When set, displays an indeterminate progress bar.
-
-    .EXAMPLE
-    Update-MCDWinPEProgress -Window $window -StepName 'Downloading image' -StepIndex 2 -StepCount 5 -Percent 20
-
-    Updates the UI to reflect step 2 of 5 at 20%.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([void])]
     param

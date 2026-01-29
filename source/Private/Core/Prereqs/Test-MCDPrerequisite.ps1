@@ -1,28 +1,28 @@
+<#
+.SYNOPSIS
+Validates runtime prerequisites for MCD operations.
+
+.DESCRIPTION
+Performs lightweight prerequisite checks for MCD operations, such as
+verifying whether the current session is running in WinPE or full Windows
+and optionally verifying administrator rights.
+
+.PARAMETER RequireWinPE
+Requires the current runtime to be WinPE (SystemDrive = X:).
+
+.PARAMETER RequireFullOS
+Requires the current runtime to be full Windows (not WinPE).
+
+.PARAMETER RequireAdministrator
+Requires the current process to run with administrator rights.
+
+.EXAMPLE
+Test-MCDPrerequisite -RequireFullOS -RequireAdministrator
+
+Ensures the command is executed on full Windows with admin rights.
+#>
 function Test-MCDPrerequisite
 {
-    <#
-    .SYNOPSIS
-    Validates runtime prerequisites for MCD operations.
-
-    .DESCRIPTION
-    Performs lightweight prerequisite checks for MCD operations, such as
-    verifying whether the current session is running in WinPE or full Windows
-    and optionally verifying administrator rights.
-
-    .PARAMETER RequireWinPE
-    Requires the current runtime to be WinPE (SystemDrive = X:).
-
-    .PARAMETER RequireFullOS
-    Requires the current runtime to be full Windows (not WinPE).
-
-    .PARAMETER RequireAdministrator
-    Requires the current process to run with administrator rights.
-
-    .EXAMPLE
-    Test-MCDPrerequisite -RequireFullOS -RequireAdministrator
-
-    Ensures the command is executed on full Windows with admin rights.
-    #>
     [CmdletBinding()]
     [OutputType([bool])]
     param

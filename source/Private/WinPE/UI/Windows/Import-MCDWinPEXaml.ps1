@@ -1,21 +1,21 @@
+<#
+.SYNOPSIS
+Loads a WinPE WPF window from a XAML file.
+
+.DESCRIPTION
+Loads required WPF assemblies and parses the provided XAML file using
+Windows.Markup.XamlReader. Returns the resulting Window instance.
+
+.PARAMETER XamlPath
+Full path to the XAML file to load as a WPF window.
+
+.EXAMPLE
+$window = Import-MCDWinPEXaml -XamlPath 'X:\\MCD\\Xaml\\WinPE\\ProgressWindow.xaml'
+
+Loads the main WinPE window XAML and returns the Window object.
+#>
 function Import-MCDWinPEXaml
 {
-    <#
-    .SYNOPSIS
-    Loads a WinPE WPF window from a XAML file.
-
-    .DESCRIPTION
-    Loads required WPF assemblies and parses the provided XAML file using
-    Windows.Markup.XamlReader. Returns the resulting Window instance.
-
-    .PARAMETER XamlPath
-    Full path to the XAML file to load as a WPF window.
-
-    .EXAMPLE
-    $window = Import-MCDWinPEXaml -XamlPath 'X:\\MCD\\Xaml\\WinPE\\ProgressWindow.xaml'
-
-    Loads the main WinPE window XAML and returns the Window object.
-    #>
     [CmdletBinding()]
     param
     (

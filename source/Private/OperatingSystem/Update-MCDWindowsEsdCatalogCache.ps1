@@ -1,55 +1,55 @@
+<#
+.SYNOPSIS
+Generates the in-repo Windows ESD catalog cache.
+
+.DESCRIPTION
+Builds a deterministic JSON (and XML) catalog of downloadable Windows ESD media
+by downloading Microsoft fwlink CAB(s), extracting products.xml, parsing
+MCT.Catalogs.Catalog.PublishedMedia.Files.File, filtering ESD entries, and writing
+the output to the specified cache directory.
+
+.PARAMETER OutputDirectory
+Output directory where catalog files will be written.
+
+.PARAMETER Fwlinks
+List of fwlink sources to download. Each entry must provide Id and Url.
+
+.PARAMETER ClientTypes
+Client type filters that must appear in the FilePath (e.g. CLIENTCONSUMER,
+CLIENTBUSINESS). Use both to build a combined catalog.
+
+.PARAMETER ProductsXmlInputs
+Optional offline inputs (for tests) to avoid downloading. Each entry must provide
+SourceFwlinkId and Path to a products.xml file.
+
+.PARAMETER UseWorProject
+If set (default), uses WORProject MCT Catalogs API to enumerate historical CAB
+catalogs and selects the latest UBR per build major.
+
+.PARAMETER WorProjectVersionsUri
+URI to WORProject getversions endpoint.
+
+.PARAMETER MinimumBuildMajorWin10
+Minimum build major (e.g. 19041) to include for Windows 10 when using WORProject.
+
+.PARAMETER MinimumBuildMajorWin11
+Minimum build major (e.g. 22000) to include for Windows 11 when using WORProject.
+
+.PARAMETER IncludeUrl
+Includes direct download URLs in the committed catalog.
+
+.PARAMETER IncludeKey
+Includes the Key field from products.xml in the committed catalog.
+
+.PARAMETER MinimumItemCount
+Minimum number of items expected in the resulting catalog. If the generated
+catalog contains fewer items, the function throws to detect fwlink/schema drift.
+
+.EXAMPLE
+Update-MCDWindowsEsdCatalogCache -OutputDirectory '.\source\Cache\Operating System'
+#>
 function Update-MCDWindowsEsdCatalogCache
 {
-    <#
-    .SYNOPSIS
-    Generates the in-repo Windows ESD catalog cache.
-
-    .DESCRIPTION
-    Builds a deterministic JSON (and XML) catalog of downloadable Windows ESD media
-    by downloading Microsoft fwlink CAB(s), extracting products.xml, parsing
-    MCT.Catalogs.Catalog.PublishedMedia.Files.File, filtering ESD entries, and writing
-    the output to the specified cache directory.
-
-    .PARAMETER OutputDirectory
-    Output directory where catalog files will be written.
-
-    .PARAMETER Fwlinks
-    List of fwlink sources to download. Each entry must provide Id and Url.
-
-    .PARAMETER ClientTypes
-    Client type filters that must appear in the FilePath (e.g. CLIENTCONSUMER,
-    CLIENTBUSINESS). Use both to build a combined catalog.
-
-    .PARAMETER ProductsXmlInputs
-    Optional offline inputs (for tests) to avoid downloading. Each entry must provide
-    SourceFwlinkId and Path to a products.xml file.
-
-    .PARAMETER UseWorProject
-    If set (default), uses WORProject MCT Catalogs API to enumerate historical CAB
-    catalogs and selects the latest UBR per build major.
-
-    .PARAMETER WorProjectVersionsUri
-    URI to WORProject getversions endpoint.
-
-    .PARAMETER MinimumBuildMajorWin10
-    Minimum build major (e.g. 19041) to include for Windows 10 when using WORProject.
-
-    .PARAMETER MinimumBuildMajorWin11
-    Minimum build major (e.g. 22000) to include for Windows 11 when using WORProject.
-
-    .PARAMETER IncludeUrl
-    Includes direct download URLs in the committed catalog.
-
-    .PARAMETER IncludeKey
-    Includes the Key field from products.xml in the committed catalog.
-
-    .PARAMETER MinimumItemCount
-    Minimum number of items expected in the resulting catalog. If the generated
-    catalog contains fewer items, the function throws to detect fwlink/schema drift.
-
-    .EXAMPLE
-    Update-MCDWindowsEsdCatalogCache -OutputDirectory '.\source\Cache\Operating System'
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidDefaultValueSwitchParameter', '', Justification = 'Switch defaults are intentional for typical catalog generation')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Justification = 'Parameters are used in nested function closures')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '', Justification = 'Empty catch blocks intentionally ignore parse errors for resilient processing')]

@@ -1,24 +1,24 @@
+<#
+.SYNOPSIS
+Tests WinPE network readiness (DHCP and basic connectivity).
+
+.DESCRIPTION
+Waits for an IPv4 address that is not APIPA/loopback and optionally checks
+basic Internet reachability using ICMP to a configurable host name.
+
+.PARAMETER WaitForDhcpSeconds
+Maximum number of seconds to wait for a DHCP-assigned IPv4 address.
+
+.PARAMETER TestHostName
+Host name to test for basic Internet connectivity using Test-Connection.
+
+.EXAMPLE
+Test-MCDNetwork -WaitForDhcpSeconds 20 -TestHostName 'google.com'
+
+Waits for DHCP and then tests Internet connectivity using ICMP.
+#>
 function Test-MCDNetwork
 {
-    <#
-    .SYNOPSIS
-    Tests WinPE network readiness (DHCP and basic connectivity).
-
-    .DESCRIPTION
-    Waits for an IPv4 address that is not APIPA/loopback and optionally checks
-    basic Internet reachability using ICMP to a configurable host name.
-
-    .PARAMETER WaitForDhcpSeconds
-    Maximum number of seconds to wait for a DHCP-assigned IPv4 address.
-
-    .PARAMETER TestHostName
-    Host name to test for basic Internet connectivity using Test-Connection.
-
-    .EXAMPLE
-    Test-MCDNetwork -WaitForDhcpSeconds 20 -TestHostName 'google.com'
-
-    Waits for DHCP and then tests Internet connectivity using ICMP.
-    #>
     [CmdletBinding()]
     param
     (

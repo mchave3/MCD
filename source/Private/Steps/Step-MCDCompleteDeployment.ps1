@@ -1,23 +1,23 @@
+<#
+.SYNOPSIS
+Completes the Windows deployment workflow and triggers reboot if needed.
+
+.DESCRIPTION
+Final step in the Windows deployment workflow. Performs cleanup tasks,
+logs workflow completion summary, and optionally triggers a reboot to boot
+into the newly deployed Windows installation.
+
+.EXAMPLE
+Step-MCDCompleteDeployment
+
+Completes the deployment and returns $true on success.
+
+.NOTES
+Uses $global:MCDWorkflowContext for workflow state. In WinPE, this step
+may trigger wpeutil reboot to boot into the deployed OS.
+#>
 function Step-MCDCompleteDeployment
 {
-    <#
-    .SYNOPSIS
-    Completes the Windows deployment workflow and triggers reboot if needed.
-
-    .DESCRIPTION
-    Final step in the Windows deployment workflow. Performs cleanup tasks,
-    logs workflow completion summary, and optionally triggers a reboot to boot
-    into the newly deployed Windows installation.
-
-    .EXAMPLE
-    Step-MCDCompleteDeployment
-
-    Completes the deployment and returns $true on success.
-
-    .NOTES
-    Uses $global:MCDWorkflowContext for workflow state. In WinPE, this step
-    may trigger wpeutil reboot to boot into the deployed OS.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([bool])]

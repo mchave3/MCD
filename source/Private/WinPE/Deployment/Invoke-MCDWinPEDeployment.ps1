@@ -1,25 +1,25 @@
+<#
+.SYNOPSIS
+Runs the WinPE deployment workflow steps using the workflow executor.
+
+.DESCRIPTION
+Executes the deployment workflow via Invoke-MCDWorkflow while updating the WinPE
+UI. The workflow is retrieved from the Selection object (set by the wizard) or
+falls back to the default workflow loaded by Initialize-MCDWorkflowTasks.
+
+.PARAMETER Window
+The WinPE main window that will be updated during the deployment workflow.
+
+.PARAMETER Selection
+The selection object returned by Start-MCDWizard including OS, language, and Workflow.
+
+.EXAMPLE
+Invoke-MCDWinPEDeployment -Window $window -Selection $selection
+
+Runs the deployment workflow specified in the selection.
+#>
 function Invoke-MCDWinPEDeployment
 {
-    <#
-    .SYNOPSIS
-    Runs the WinPE deployment workflow steps using the workflow executor.
-
-    .DESCRIPTION
-    Executes the deployment workflow via Invoke-MCDWorkflow while updating the WinPE
-    UI. The workflow is retrieved from the Selection object (set by the wizard) or
-    falls back to the default workflow loaded by Initialize-MCDWorkflowTasks.
-
-    .PARAMETER Window
-    The WinPE main window that will be updated during the deployment workflow.
-
-    .PARAMETER Selection
-    The selection object returned by Start-MCDWizard including OS, language, and Workflow.
-
-    .EXAMPLE
-    Invoke-MCDWinPEDeployment -Window $window -Selection $selection
-
-    Runs the deployment workflow specified in the selection.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([void])]

@@ -1,26 +1,26 @@
+<#
+.SYNOPSIS
+Deploys the Windows image to the target disk partition.
+
+.DESCRIPTION
+Placeholder step for Windows image deployment. This step will be responsible
+for downloading the Windows image from cloud storage and applying it to the
+target Windows partition using DISM or similar tools.
+
+Currently this step only logs its execution and returns success without
+performing actual imaging operations.
+
+.EXAMPLE
+Step-MCDDeployWindows
+
+Executes the Windows deployment step (placeholder).
+
+.NOTES
+This is a placeholder implementation. Actual imaging logic will be added
+in a future iteration. Uses $global:MCDWorkflowContext for workflow state.
+#>
 function Step-MCDDeployWindows
 {
-    <#
-    .SYNOPSIS
-    Deploys the Windows image to the target disk partition.
-
-    .DESCRIPTION
-    Placeholder step for Windows image deployment. This step will be responsible
-    for downloading the Windows image from cloud storage and applying it to the
-    target Windows partition using DISM or similar tools.
-
-    Currently this step only logs its execution and returns success without
-    performing actual imaging operations.
-
-    .EXAMPLE
-    Step-MCDDeployWindows
-
-    Executes the Windows deployment step (placeholder).
-
-    .NOTES
-    This is a placeholder implementation. Actual imaging logic will be added
-    in a future iteration. Uses $global:MCDWorkflowContext for workflow state.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([bool])]

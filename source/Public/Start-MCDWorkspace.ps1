@@ -1,21 +1,21 @@
+<#
+.SYNOPSIS
+Initializes an MCD Workspace profile under ProgramData.
+
+.DESCRIPTION
+Creates or updates an MCD Workspace profile under %ProgramData%\MCD and
+writes initial Workspace and WinPE configuration files for that profile.
+
+.PARAMETER ProfileName
+Name of the workspace profile to create or update under ProgramData.
+
+.EXAMPLE
+Start-MCDWorkspace -ProfileName Default
+
+Creates (or updates) the Default workspace profile in ProgramData.
+#>
 function Start-MCDWorkspace
 {
-    <#
-    .SYNOPSIS
-    Initializes an MCD Workspace profile under ProgramData.
-
-    .DESCRIPTION
-    Creates or updates an MCD Workspace profile under %ProgramData%\MCD and
-    writes initial Workspace and WinPE configuration files for that profile.
-
-    .PARAMETER ProfileName
-    Name of the workspace profile to create or update under ProgramData.
-
-    .EXAMPLE
-    Start-MCDWorkspace -ProfileName Default
-
-    Creates (or updates) the Default workspace profile in ProgramData.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (

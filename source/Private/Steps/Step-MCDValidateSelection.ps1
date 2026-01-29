@@ -1,25 +1,25 @@
+<#
+.SYNOPSIS
+Validates the deployment selection before proceeding with the workflow.
+
+.DESCRIPTION
+Validates that the global MCDWorkflowContext contains a valid selection object
+with the required properties for deployment. Checks that an operating system
+has been selected and that all required properties are present. Uses global
+workflow variables set by Invoke-MCDWorkflow.
+
+.EXAMPLE
+Step-MCDValidateSelection
+
+Validates the current workflow selection and returns $true on success.
+
+.NOTES
+This step reads from $global:MCDWorkflowContext.CurrentStep.parameters.Selection
+or falls back to the selection stored in the workflow context. Uses Start-Transcript
+for per-step logging.
+#>
 function Step-MCDValidateSelection
 {
-    <#
-    .SYNOPSIS
-    Validates the deployment selection before proceeding with the workflow.
-
-    .DESCRIPTION
-    Validates that the global MCDWorkflowContext contains a valid selection object
-    with the required properties for deployment. Checks that an operating system
-    has been selected and that all required properties are present. Uses global
-    workflow variables set by Invoke-MCDWorkflow.
-
-    .EXAMPLE
-    Step-MCDValidateSelection
-
-    Validates the current workflow selection and returns $true on success.
-
-    .NOTES
-    This step reads from $global:MCDWorkflowContext.CurrentStep.parameters.Selection
-    or falls back to the selection stored in the workflow context. Uses Start-Transcript
-    for per-step logging.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([bool])]

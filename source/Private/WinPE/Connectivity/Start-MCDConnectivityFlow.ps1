@@ -1,28 +1,28 @@
+<#
+.SYNOPSIS
+Runs the WinPE connectivity flow and optionally prompts for Wi-Fi.
+
+.DESCRIPTION
+Tests DHCP and basic Internet connectivity. If Internet is unavailable, a
+connectivity window can be displayed to allow the user to retry or open a
+Wi-Fi connection UI (WirelessConnect.exe when available), then re-test.
+
+.PARAMETER WinPEConfig
+WinPE configuration object (typically loaded from Get-MCDConfig).
+
+.PARAMETER XamlRoot
+Root directory containing the WinPE XAML files.
+
+.PARAMETER NoUI
+Disables the connectivity window and only performs non-interactive tests.
+
+.EXAMPLE
+Start-MCDConnectivityFlow -WinPEConfig $winpeConfig -XamlRoot $context.XamlRoot
+
+Checks connectivity and optionally prompts for Wi-Fi.
+#>
 function Start-MCDConnectivityFlow
 {
-    <#
-    .SYNOPSIS
-    Runs the WinPE connectivity flow and optionally prompts for Wi-Fi.
-
-    .DESCRIPTION
-    Tests DHCP and basic Internet connectivity. If Internet is unavailable, a
-    connectivity window can be displayed to allow the user to retry or open a
-    Wi-Fi connection UI (WirelessConnect.exe when available), then re-test.
-
-    .PARAMETER WinPEConfig
-    WinPE configuration object (typically loaded from Get-MCDConfig).
-
-    .PARAMETER XamlRoot
-    Root directory containing the WinPE XAML files.
-
-    .PARAMETER NoUI
-    Disables the connectivity window and only performs non-interactive tests.
-
-    .EXAMPLE
-    Start-MCDConnectivityFlow -WinPEConfig $winpeConfig -XamlRoot $context.XamlRoot
-
-    Checks connectivity and optionally prompts for Wi-Fi.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([pscustomobject])]
     param

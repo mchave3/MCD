@@ -1,48 +1,48 @@
+<#
+.SYNOPSIS
+Executes an MCD workflow by running steps sequentially.
+
+.DESCRIPTION
+Executes a workflow object by iterating through its steps array and running each
+step command. Handles skip rules, architecture filtering, environment checks
+(WinPE vs Full OS), retry logic, and progress UI updates. Persists workflow state
+to disk after each step completion.
+
+Steps are skipped based on rules:
+- rules.skip = true => skip
+- rules.architecture does not contain current architecture => skip
+- rules.runinwinpe = false and running in WinPE => skip
+- rules.runinfullos = false and running in Full OS => skip
+
+Retry behavior (when rules.retry.enabled = true):
+- Retries up to rules.retry.maxAttempts times on failure
+- Waits rules.retry.retryDelay seconds between attempts
+
+Error handling:
+- If rules.continueOnError = true, logs error and continues
+- If rules.continueOnError = false, throws and stops workflow
+
+.PARAMETER WorkflowObject
+The workflow object (hashtable or PSCustomObject) containing workflow metadata
+and steps array. Typically returned by Initialize-MCDWorkflowTasks.
+
+.PARAMETER Window
+Optional WPF Window for progress UI updates. When provided, calls
+Update-MCDWinPEProgress with step information.
+
+.EXAMPLE
+$workflow = Initialize-MCDWorkflowTasks | Select-Object -First 1
+Invoke-MCDWorkflow -WorkflowObject $workflow
+
+Executes the first available workflow without UI updates.
+
+.EXAMPLE
+Invoke-MCDWorkflow -WorkflowObject $workflow -Window $progressWindow
+
+Executes the workflow with progress UI updates.
+#>
 function Invoke-MCDWorkflow
 {
-    <#
-    .SYNOPSIS
-    Executes an MCD workflow by running steps sequentially.
-
-    .DESCRIPTION
-    Executes a workflow object by iterating through its steps array and running each
-    step command. Handles skip rules, architecture filtering, environment checks
-    (WinPE vs Full OS), retry logic, and progress UI updates. Persists workflow state
-    to disk after each step completion.
-
-    Steps are skipped based on rules:
-    - rules.skip = true => skip
-    - rules.architecture does not contain current architecture => skip
-    - rules.runinwinpe = false and running in WinPE => skip
-    - rules.runinfullos = false and running in Full OS => skip
-
-    Retry behavior (when rules.retry.enabled = true):
-    - Retries up to rules.retry.maxAttempts times on failure
-    - Waits rules.retry.retryDelay seconds between attempts
-
-    Error handling:
-    - If rules.continueOnError = true, logs error and continues
-    - If rules.continueOnError = false, throws and stops workflow
-
-    .PARAMETER WorkflowObject
-    The workflow object (hashtable or PSCustomObject) containing workflow metadata
-    and steps array. Typically returned by Initialize-MCDWorkflowTasks.
-
-    .PARAMETER Window
-    Optional WPF Window for progress UI updates. When provided, calls
-    Update-MCDWinPEProgress with step information.
-
-    .EXAMPLE
-    $workflow = Initialize-MCDWorkflowTasks | Select-Object -First 1
-    Invoke-MCDWorkflow -WorkflowObject $workflow
-
-    Executes the first available workflow without UI updates.
-
-    .EXAMPLE
-    Invoke-MCDWorkflow -WorkflowObject $workflow -Window $progressWindow
-
-    Executes the workflow with progress UI updates.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([void])]

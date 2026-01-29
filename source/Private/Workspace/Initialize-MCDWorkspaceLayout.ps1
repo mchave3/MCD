@@ -1,21 +1,21 @@
+<#
+.SYNOPSIS
+Creates the directory layout for an MCD workspace profile.
+
+.DESCRIPTION
+Creates the workspace directory structure under %ProgramData%\MCD\Workspaces\<ProfileName>
+and writes initial profile configuration files under %ProgramData%\MCD\Profiles\<ProfileName>.
+
+.PARAMETER ProfileName
+Name of the profile used to create the workspace and profile configuration.
+
+.EXAMPLE
+Initialize-MCDWorkspaceLayout -ProfileName Default
+
+Creates the Default workspace directory structure and default configs.
+#>
 function Initialize-MCDWorkspaceLayout
 {
-    <#
-    .SYNOPSIS
-    Creates the directory layout for an MCD workspace profile.
-
-    .DESCRIPTION
-    Creates the workspace directory structure under %ProgramData%\MCD\Workspaces\<ProfileName>
-    and writes initial profile configuration files under %ProgramData%\MCD\Profiles\<ProfileName>.
-
-    .PARAMETER ProfileName
-    Name of the profile used to create the workspace and profile configuration.
-
-    .EXAMPLE
-    Initialize-MCDWorkspaceLayout -ProfileName Default
-
-    Creates the Default workspace directory structure and default configs.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (

@@ -1,22 +1,22 @@
+<#
+.SYNOPSIS
+Returns candidate target disks for deployment in WinPE.
+
+.DESCRIPTION
+Enumerates local disks and filters out disks by BusType (for example USB)
+to build a candidate list. Each returned object includes a DisplayName that
+is suitable for use in the WinPE wizard UI.
+
+.PARAMETER ExcludeBusTypes
+One or more storage BusTypes to exclude (for example 'USB').
+
+.EXAMPLE
+Get-MCDTargetDiskCandidate -ExcludeBusTypes @('USB')
+
+Lists candidate target disks excluding USB devices.
+#>
 function Get-MCDTargetDiskCandidate
 {
-    <#
-    .SYNOPSIS
-    Returns candidate target disks for deployment in WinPE.
-
-    .DESCRIPTION
-    Enumerates local disks and filters out disks by BusType (for example USB)
-    to build a candidate list. Each returned object includes a DisplayName that
-    is suitable for use in the WinPE wizard UI.
-
-    .PARAMETER ExcludeBusTypes
-    One or more storage BusTypes to exclude (for example 'USB').
-
-    .EXAMPLE
-    Get-MCDTargetDiskCandidate -ExcludeBusTypes @('USB')
-
-    Lists candidate target disks excluding USB devices.
-    #>
     [CmdletBinding()]
     [OutputType([System.Array])]
     param

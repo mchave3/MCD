@@ -1,28 +1,28 @@
+<#
+.SYNOPSIS
+Writes an MCD configuration object to ProgramData.
+
+.DESCRIPTION
+Serializes a hashtable to JSON and writes it to
+%ProgramData%\MCD\Profiles\<ProfileName>\<ConfigName>.json. This is used by
+the Workspace flow to create/update a profile configuration.
+
+.PARAMETER ConfigName
+Name of the configuration file to write (Workspace or WinPE).
+
+.PARAMETER Data
+Hashtable that will be serialized to JSON and written to disk.
+
+.PARAMETER ProfileName
+Workspace profile name to store the configuration under ProgramData.
+
+.EXAMPLE
+Set-MCDConfig -ConfigName WinPE -ProfileName Default -Data @{ PreferPSGalleryUpdate = $true }
+
+Writes the WinPE configuration for the Default profile.
+#>
 function Set-MCDConfig
 {
-    <#
-    .SYNOPSIS
-    Writes an MCD configuration object to ProgramData.
-
-    .DESCRIPTION
-    Serializes a hashtable to JSON and writes it to
-    %ProgramData%\MCD\Profiles\<ProfileName>\<ConfigName>.json. This is used by
-    the Workspace flow to create/update a profile configuration.
-
-    .PARAMETER ConfigName
-    Name of the configuration file to write (Workspace or WinPE).
-
-    .PARAMETER Data
-    Hashtable that will be serialized to JSON and written to disk.
-
-    .PARAMETER ProfileName
-    Workspace profile name to store the configuration under ProgramData.
-
-    .EXAMPLE
-    Set-MCDConfig -ConfigName WinPE -ProfileName Default -Data @{ PreferPSGalleryUpdate = $true }
-
-    Writes the WinPE configuration for the Default profile.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (

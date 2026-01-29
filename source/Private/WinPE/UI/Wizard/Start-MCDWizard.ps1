@@ -1,31 +1,31 @@
+<#
+.SYNOPSIS
+Starts the MCD WinPE wizard to collect deployment selections.
+
+.DESCRIPTION
+Loads wizard option sets from the Workspace configuration for a profile and
+shows a WPF wizard window. The wizard returns a selection object containing
+the selected computer language, operating system id, and driver pack.
+
+.PARAMETER WorkspaceConfig
+Workspace configuration object (typically loaded from Get-MCDConfig).
+
+.PARAMETER XamlRoot
+Root directory containing the WinPE XAML files.
+
+.PARAMETER WinPEConfig
+WinPE configuration object (typically loaded from Get-MCDConfig).
+
+.PARAMETER NoUI
+Disables the wizard UI and returns default selections.
+
+.EXAMPLE
+Start-MCDWizard -WorkspaceConfig $workspaceConfig -WinPEConfig $winpeConfig -XamlRoot $context.XamlRoot
+
+Starts the wizard and returns a selection object.
+#>
 function Start-MCDWizard
 {
-    <#
-    .SYNOPSIS
-    Starts the MCD WinPE wizard to collect deployment selections.
-
-    .DESCRIPTION
-    Loads wizard option sets from the Workspace configuration for a profile and
-    shows a WPF wizard window. The wizard returns a selection object containing
-    the selected computer language, operating system id, and driver pack.
-
-    .PARAMETER WorkspaceConfig
-    Workspace configuration object (typically loaded from Get-MCDConfig).
-
-    .PARAMETER XamlRoot
-    Root directory containing the WinPE XAML files.
-
-    .PARAMETER WinPEConfig
-    WinPE configuration object (typically loaded from Get-MCDConfig).
-
-    .PARAMETER NoUI
-    Disables the wizard UI and returns default selections.
-
-    .EXAMPLE
-    Start-MCDWizard -WorkspaceConfig $workspaceConfig -WinPEConfig $winpeConfig -XamlRoot $context.XamlRoot
-
-    Starts the wizard and returns a selection object.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'selectedWorkflow', Justification = 'Variable used for validation logic within scriptblock')]
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([pscustomobject])]

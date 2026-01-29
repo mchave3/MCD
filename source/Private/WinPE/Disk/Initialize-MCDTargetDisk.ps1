@@ -1,37 +1,37 @@
+<#
+.SYNOPSIS
+Prepares a target disk for Windows deployment in WinPE.
+
+.DESCRIPTION
+Clears and initializes a disk according to the WinPE DiskPolicy and creates
+a basic UEFI/GPT partition layout suitable for applying a Windows image.
+This function is intentionally guarded: destructive actions only run when
+DiskPolicy.AllowDestructiveActions is enabled.
+
+Current layout (UEFI/GPT):
+- EFI System Partition (FAT32, 260MB)
+- Microsoft Reserved Partition (MSR, 16MB)
+- Windows partition (NTFS, remaining space)
+
+The layout aligns with Microsoft partitioning guidance and uses the WinPE-
+safe drive letters recommended by Microsoft (System=S, Windows=W) when
+available.
+
+.PARAMETER DiskNumber
+Disk number to prepare (the disk will be wiped and repartitioned when
+destructive actions are permitted).
+
+.PARAMETER DiskPolicy
+WinPE disk policy object (typically from WinPE config). The property
+AllowDestructiveActions must be $true to permit wiping/partitioning.
+
+.EXAMPLE
+Initialize-MCDTargetDisk -DiskNumber 0 -DiskPolicy ([pscustomobject]@{ AllowDestructiveActions = $true })
+
+Clears disk 0 and creates a UEFI/GPT partition layout.
+#>
 function Initialize-MCDTargetDisk
 {
-    <#
-    .SYNOPSIS
-    Prepares a target disk for Windows deployment in WinPE.
-
-    .DESCRIPTION
-    Clears and initializes a disk according to the WinPE DiskPolicy and creates
-    a basic UEFI/GPT partition layout suitable for applying a Windows image.
-    This function is intentionally guarded: destructive actions only run when
-    DiskPolicy.AllowDestructiveActions is enabled.
-
-    Current layout (UEFI/GPT):
-    - EFI System Partition (FAT32, 260MB)
-    - Microsoft Reserved Partition (MSR, 16MB)
-    - Windows partition (NTFS, remaining space)
-
-    The layout aligns with Microsoft partitioning guidance and uses the WinPE-
-    safe drive letters recommended by Microsoft (System=S, Windows=W) when
-    available.
-
-    .PARAMETER DiskNumber
-    Disk number to prepare (the disk will be wiped and repartitioned when
-    destructive actions are permitted).
-
-    .PARAMETER DiskPolicy
-    WinPE disk policy object (typically from WinPE config). The property
-    AllowDestructiveActions must be $true to permit wiping/partitioning.
-
-    .EXAMPLE
-    Initialize-MCDTargetDisk -DiskNumber 0 -DiskPolicy ([pscustomobject]@{ AllowDestructiveActions = $true })
-
-    Clears disk 0 and creates a UEFI/GPT partition layout.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     [OutputType([pscustomobject])]
     param

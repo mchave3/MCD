@@ -1,19 +1,19 @@
+<#
+.SYNOPSIS
+Returns runtime context information for the MCD module.
+
+.DESCRIPTION
+Returns a context object describing the current runtime environment (WinPE vs
+full Windows) as well as key MCD paths such as ProgramData roots and the XAML
+folder shipped with the module.
+
+.EXAMPLE
+Get-MCDExecutionContext
+
+Returns the current MCD execution context.
+#>
 function Get-MCDExecutionContext
 {
-    <#
-    .SYNOPSIS
-    Returns runtime context information for the MCD module.
-
-    .DESCRIPTION
-    Returns a context object describing the current runtime environment (WinPE vs
-    full Windows) as well as key MCD paths such as ProgramData roots and the XAML
-    folder shipped with the module.
-
-    .EXAMPLE
-    Get-MCDExecutionContext
-
-    Returns the current MCD execution context.
-    #>
     [CmdletBinding()]
     param ()
 

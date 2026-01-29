@@ -1,30 +1,30 @@
+<#
+.SYNOPSIS
+Returns an available drive letter for use during WinPE deployment.
+
+.DESCRIPTION
+Determines an unused drive letter by inspecting existing PowerShell drives.
+This helper is used when creating temporary WinPE drive letters (for example
+System=S and Windows=W) while avoiding collisions with already-mounted
+volumes.
+
+.PARAMETER PreferredLetters
+Ordered list of preferred drive letters to try first.
+
+.PARAMETER FallbackLetters
+Ordered list of fallback drive letters to try if none of the preferred
+letters are available.
+
+.PARAMETER ExcludeLetters
+One or more letters to treat as unavailable (reserved by the caller).
+
+.EXAMPLE
+Get-MCDAvailableDriveLetter -PreferredLetters @('S','W')
+
+Returns the first available letter from the preferred list.
+#>
 function Get-MCDAvailableDriveLetter
 {
-    <#
-    .SYNOPSIS
-    Returns an available drive letter for use during WinPE deployment.
-
-    .DESCRIPTION
-    Determines an unused drive letter by inspecting existing PowerShell drives.
-    This helper is used when creating temporary WinPE drive letters (for example
-    System=S and Windows=W) while avoiding collisions with already-mounted
-    volumes.
-
-    .PARAMETER PreferredLetters
-    Ordered list of preferred drive letters to try first.
-
-    .PARAMETER FallbackLetters
-    Ordered list of fallback drive letters to try if none of the preferred
-    letters are available.
-
-    .PARAMETER ExcludeLetters
-    One or more letters to treat as unavailable (reserved by the caller).
-
-    .EXAMPLE
-    Get-MCDAvailableDriveLetter -PreferredLetters @('S','W')
-
-    Returns the first available letter from the preferred list.
-    #>
     [CmdletBinding()]
     [OutputType([string])]
     param

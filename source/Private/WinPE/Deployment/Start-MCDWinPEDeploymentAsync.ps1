@@ -1,25 +1,25 @@
+<#
+.SYNOPSIS
+Starts the WinPE deployment runner in a background runspace.
+
+.DESCRIPTION
+Creates a dedicated STA runspace and runs Invoke-MCDWinPEDeployment while
+the WinPE UI message loop continues. The runner updates the UI through the
+WPF Dispatcher.
+
+.PARAMETER Window
+The WinPE main window that will receive progress updates via Dispatcher.
+
+.PARAMETER Selection
+The selection object returned by Start-MCDWizard.
+
+.EXAMPLE
+Start-MCDWinPEDeploymentAsync -Window $window -Selection $selection
+
+Starts the deployment runner in the background.
+#>
 function Start-MCDWinPEDeploymentAsync
 {
-    <#
-    .SYNOPSIS
-    Starts the WinPE deployment runner in a background runspace.
-
-    .DESCRIPTION
-    Creates a dedicated STA runspace and runs Invoke-MCDWinPEDeployment while
-    the WinPE UI message loop continues. The runner updates the UI through the
-    WPF Dispatcher.
-
-    .PARAMETER Window
-    The WinPE main window that will receive progress updates via Dispatcher.
-
-    .PARAMETER Selection
-    The selection object returned by Start-MCDWizard.
-
-    .EXAMPLE
-    Start-MCDWinPEDeploymentAsync -Window $window -Selection $selection
-
-    Starts the deployment runner in the background.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([void])]
     param

@@ -1,28 +1,28 @@
+<#
+.SYNOPSIS
+Starts the MCD WinPE deployment experience.
+
+.DESCRIPTION
+Runs the initial WinPE flow: validates WinPE context, checks connectivity,
+optionally updates the MCD module from PowerShell Gallery, and then loads
+and shows the WinPE main window XAML.
+
+.PARAMETER ProfileName
+Workspace profile name to load WinPE configuration from under ProgramData.
+
+.PARAMETER SkipModuleUpdate
+Skips the PowerShell Gallery update check for the MCD module in WinPE.
+
+.PARAMETER NoUI
+Prevents opening the WinPE UI. Intended for automated testing scenarios.
+
+.EXAMPLE
+Start-MCDWinPE -ProfileName Default
+
+Starts the WinPE flow using the Default workspace profile configuration.
+#>
 function Start-MCDWinPE
 {
-    <#
-    .SYNOPSIS
-    Starts the MCD WinPE deployment experience.
-
-    .DESCRIPTION
-    Runs the initial WinPE flow: validates WinPE context, checks connectivity,
-    optionally updates the MCD module from PowerShell Gallery, and then loads
-    and shows the WinPE main window XAML.
-
-    .PARAMETER ProfileName
-    Workspace profile name to load WinPE configuration from under ProgramData.
-
-    .PARAMETER SkipModuleUpdate
-    Skips the PowerShell Gallery update check for the MCD module in WinPE.
-
-    .PARAMETER NoUI
-    Prevents opening the WinPE UI. Intended for automated testing scenarios.
-
-    .EXAMPLE
-    Start-MCDWinPE -ProfileName Default
-
-    Starts the WinPE flow using the Default workspace profile configuration.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (

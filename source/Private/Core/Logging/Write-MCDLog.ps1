@@ -1,28 +1,28 @@
+<#
+.SYNOPSIS
+Writes a log entry to the MCD log file.
+
+.DESCRIPTION
+Writes a timestamped log line to a UTF-8 log file. If no explicit log path is
+provided, the function uses the default MCD LogsRoot for the current runtime
+context (WinPE vs full Windows).
+
+.PARAMETER Level
+Log level used to tag the message in the log file and in verbose output.
+
+.PARAMETER Message
+The message text to write as a single log line.
+
+.PARAMETER Path
+Optional explicit path to the log file to write to.
+
+.EXAMPLE
+Write-MCDLog -Level Info -Message 'Workspace initialized.'
+
+Writes an informational log entry to the default MCD log file.
+#>
 function Write-MCDLog
 {
-    <#
-    .SYNOPSIS
-    Writes a log entry to the MCD log file.
-
-    .DESCRIPTION
-    Writes a timestamped log line to a UTF-8 log file. If no explicit log path is
-    provided, the function uses the default MCD LogsRoot for the current runtime
-    context (WinPE vs full Windows).
-
-    .PARAMETER Level
-    Log level used to tag the message in the log file and in verbose output.
-
-    .PARAMETER Message
-    The message text to write as a single log line.
-
-    .PARAMETER Path
-    Optional explicit path to the log file to write to.
-
-    .EXAMPLE
-    Write-MCDLog -Level Info -Message 'Workspace initialized.'
-
-    Writes an informational log entry to the default MCD log file.
-    #>
     [CmdletBinding()]
     param
     (

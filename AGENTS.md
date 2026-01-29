@@ -106,6 +106,25 @@ Common function shape:
 - Use `process { }` when accepting pipeline input.
 - Prefer `Write-Verbose -Message ...` for optional output; return data via `Write-Output`/implicit output.
 
+Comment-Based Help:
+- Write comment-based help **BEFORE** the `function` keyword (not after).
+- Comment block must be placed immediately above the function definition to be recognized by `Get-Help`.
+- Example:
+  ```powershell
+  <#
+  .SYNOPSIS
+  Short description.
+
+  .DESCRIPTION
+  Longer description (>40 chars).
+  #>
+  function Write-MCDLog
+  {
+      [CmdletBinding()]
+      param(...)
+  }
+  ```
+
 ShouldProcess:
 - If a function changes state, implement `SupportsShouldProcess = $true` and guard with `$PSCmdlet.ShouldProcess(...)` (`PSShouldProcess`).
 

@@ -1,24 +1,24 @@
+<#
+.SYNOPSIS
+Saves workflow state to the state file.
+
+.DESCRIPTION
+Internal helper function to persist workflow state to the state JSON file.
+Ensures the target directory exists and writes state as UTF-8 JSON.
+
+.PARAMETER State
+The state hashtable to save.
+
+.PARAMETER StateDirectory
+The directory containing the state file.
+
+.EXAMPLE
+Save-MCDWorkflowState -State $state -StateDirectory 'C:\Windows\Temp\MCD'
+
+Saves the workflow state to C:\Windows\Temp\MCD\State.json.
+#>
 function Save-MCDWorkflowState
 {
-    <#
-    .SYNOPSIS
-    Saves workflow state to the state file.
-
-    .DESCRIPTION
-    Internal helper function to persist workflow state to the state JSON file.
-    Ensures the target directory exists and writes state as UTF-8 JSON.
-
-    .PARAMETER State
-    The state hashtable to save.
-
-    .PARAMETER StateDirectory
-    The directory containing the state file.
-
-    .EXAMPLE
-    Save-MCDWorkflowState -State $state -StateDirectory 'C:\Windows\Temp\MCD'
-
-    Saves the workflow state to C:\Windows\Temp\MCD\State.json.
-    #>
     [CmdletBinding()]
     param
     (

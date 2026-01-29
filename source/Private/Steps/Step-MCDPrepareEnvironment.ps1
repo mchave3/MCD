@@ -1,23 +1,23 @@
+<#
+.SYNOPSIS
+Prepares the deployment environment before applying the Windows image.
+
+.DESCRIPTION
+Performs environment preparation tasks required before Windows image deployment.
+This includes verifying network connectivity, checking for module updates from
+PowerShell Gallery, and ensuring required directories exist on the target disk.
+
+.EXAMPLE
+Step-MCDPrepareEnvironment
+
+Prepares the deployment environment and returns $true on success.
+
+.NOTES
+Uses $global:MCDWorkflowContext for workflow state. May call Update-MCDFromPSGallery
+to check for module updates.
+#>
 function Step-MCDPrepareEnvironment
 {
-    <#
-    .SYNOPSIS
-    Prepares the deployment environment before applying the Windows image.
-
-    .DESCRIPTION
-    Performs environment preparation tasks required before Windows image deployment.
-    This includes verifying network connectivity, checking for module updates from
-    PowerShell Gallery, and ensuring required directories exist on the target disk.
-
-    .EXAMPLE
-    Step-MCDPrepareEnvironment
-
-    Prepares the deployment environment and returns $true on success.
-
-    .NOTES
-    Uses $global:MCDWorkflowContext for workflow state. May call Update-MCDFromPSGallery
-    to check for module updates.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]
     [OutputType([bool])]

@@ -1,28 +1,28 @@
+<#
+.SYNOPSIS
+Downloads a file to disk using Invoke-WebRequest.
+
+.DESCRIPTION
+Downloads a file from a given URI to a destination path. The destination
+directory is created if it does not exist. When the destination file already
+exists, the function returns the existing file unless -Force is specified.
+
+.PARAMETER Uri
+The HTTP/HTTPS URI of the file to download.
+
+.PARAMETER DestinationPath
+Full path where the downloaded file will be written.
+
+.PARAMETER Force
+Overwrites the destination file when it already exists.
+
+.EXAMPLE
+Invoke-MCDDownload -Uri 'https://example.com/file.zip' -DestinationPath 'X:\\Temp\\file.zip' -Force
+
+Downloads file.zip to X:\Temp and overwrites any existing file.
+#>
 function Invoke-MCDDownload
 {
-    <#
-    .SYNOPSIS
-    Downloads a file to disk using Invoke-WebRequest.
-
-    .DESCRIPTION
-    Downloads a file from a given URI to a destination path. The destination
-    directory is created if it does not exist. When the destination file already
-    exists, the function returns the existing file unless -Force is specified.
-
-    .PARAMETER Uri
-    The HTTP/HTTPS URI of the file to download.
-
-    .PARAMETER DestinationPath
-    Full path where the downloaded file will be written.
-
-    .PARAMETER Force
-    Overwrites the destination file when it already exists.
-
-    .EXAMPLE
-    Invoke-MCDDownload -Uri 'https://example.com/file.zip' -DestinationPath 'X:\\Temp\\file.zip' -Force
-
-    Downloads file.zip to X:\Temp and overwrites any existing file.
-    #>
     [CmdletBinding()]
     param
     (

@@ -1,32 +1,32 @@
+<#
+.SYNOPSIS
+Copies WinPE logs to the target OS partition for preservation.
+
+.DESCRIPTION
+Copies log files from the WinPE logs directory (X:\MCD\Logs\) to the target
+OS partition (default C:\Windows\Temp\MCD\Logs\) so they persist after reboot.
+This step should run after disk preparation and before or after Windows image
+deployment.
+
+.PARAMETER OsPartitionDrive
+The drive letter of the OS partition to copy logs to. Defaults to 'C'.
+
+.EXAMPLE
+Step-MCDCopyWinPELogs
+
+Copies logs from X:\MCD\Logs\ to C:\Windows\Temp\MCD\Logs\.
+
+.EXAMPLE
+Step-MCDCopyWinPELogs -OsPartitionDrive 'W'
+
+Copies logs from X:\MCD\Logs\ to W:\Windows\Temp\MCD\Logs\.
+
+.NOTES
+This step only runs in WinPE. In Full OS, it completes successfully without
+action. Uses $global:MCDWorkflowContext for workflow state.
+#>
 function Step-MCDCopyWinPELogs
 {
-    <#
-    .SYNOPSIS
-    Copies WinPE logs to the target OS partition for preservation.
-
-    .DESCRIPTION
-    Copies log files from the WinPE logs directory (X:\MCD\Logs\) to the target
-    OS partition (default C:\Windows\Temp\MCD\Logs\) so they persist after reboot.
-    This step should run after disk preparation and before or after Windows image
-    deployment.
-
-    .PARAMETER OsPartitionDrive
-    The drive letter of the OS partition to copy logs to. Defaults to 'C'.
-
-    .EXAMPLE
-    Step-MCDCopyWinPELogs
-
-    Copies logs from X:\MCD\Logs\ to C:\Windows\Temp\MCD\Logs\.
-
-    .EXAMPLE
-    Step-MCDCopyWinPELogs -OsPartitionDrive 'W'
-
-    Copies logs from X:\MCD\Logs\ to W:\Windows\Temp\MCD\Logs\.
-
-    .NOTES
-    This step only runs in WinPE. In Full OS, it completes successfully without
-    action. Uses $global:MCDWorkflowContext for workflow state.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Logs is the correct term for copying multiple log files')]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'OSDCloud pattern: workflow context shared via globals')]
     [CmdletBinding()]

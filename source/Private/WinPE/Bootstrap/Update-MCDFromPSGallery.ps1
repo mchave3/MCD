@@ -1,22 +1,22 @@
+<#
+.SYNOPSIS
+Updates the MCD module from PowerShell Gallery when a newer version exists.
+
+.DESCRIPTION
+Compares the locally available module version with the PowerShell Gallery
+version. If the Gallery version is newer, the module is installed and then
+imported again. This mirrors the version-check behavior used by OSDCloud.
+
+.PARAMETER ModuleName
+Name of the module to check and update from PowerShell Gallery.
+
+.EXAMPLE
+Update-MCDFromPSGallery -ModuleName MCD
+
+Updates MCD from PSGallery when the Gallery version is newer.
+#>
 function Update-MCDFromPSGallery
 {
-    <#
-    .SYNOPSIS
-    Updates the MCD module from PowerShell Gallery when a newer version exists.
-
-    .DESCRIPTION
-    Compares the locally available module version with the PowerShell Gallery
-    version. If the Gallery version is newer, the module is installed and then
-    imported again. This mirrors the version-check behavior used by OSDCloud.
-
-    .PARAMETER ModuleName
-    Name of the module to check and update from PowerShell Gallery.
-
-    .EXAMPLE
-    Update-MCDFromPSGallery -ModuleName MCD
-
-    Updates MCD from PSGallery when the Gallery version is newer.
-    #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([bool])]
     param

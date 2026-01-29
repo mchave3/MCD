@@ -1,39 +1,39 @@
+<#
+.SYNOPSIS
+Loads workflow definitions from module and USB profile directories.
+
+.DESCRIPTION
+Scans for workflow JSON files in the module's Workflows directory and optionally
+from a USB profile directory. Returns parsed workflow objects sorted with the
+default workflow first, then alphabetically by name. Invalid JSON files are
+skipped with a warning. Missing step commands are warned about but do not cause
+failures.
+
+.PARAMETER ProfileName
+Optional profile name to load a custom workflow from USB profile directory.
+When specified, the function looks for workflow.json in the profile folder.
+
+.PARAMETER Architecture
+Optional architecture filter (amd64 or arm64). When specified, only workflows
+supporting the given architecture are returned.
+
+.EXAMPLE
+Initialize-MCDWorkflowTasks
+
+Loads all default workflows from the module's Workflows directory.
+
+.EXAMPLE
+Initialize-MCDWorkflowTasks -ProfileName 'CustomProfile'
+
+Loads workflows from the module and the CustomProfile USB profile.
+
+.EXAMPLE
+Initialize-MCDWorkflowTasks -Architecture 'amd64'
+
+Loads only workflows that support the amd64 architecture.
+#>
 function Initialize-MCDWorkflowTasks
 {
-    <#
-    .SYNOPSIS
-    Loads workflow definitions from module and USB profile directories.
-
-    .DESCRIPTION
-    Scans for workflow JSON files in the module's Workflows directory and optionally
-    from a USB profile directory. Returns parsed workflow objects sorted with the
-    default workflow first, then alphabetically by name. Invalid JSON files are
-    skipped with a warning. Missing step commands are warned about but do not cause
-    failures.
-
-    .PARAMETER ProfileName
-    Optional profile name to load a custom workflow from USB profile directory.
-    When specified, the function looks for workflow.json in the profile folder.
-
-    .PARAMETER Architecture
-    Optional architecture filter (amd64 or arm64). When specified, only workflows
-    supporting the given architecture are returned.
-
-    .EXAMPLE
-    Initialize-MCDWorkflowTasks
-
-    Loads all default workflows from the module's Workflows directory.
-
-    .EXAMPLE
-    Initialize-MCDWorkflowTasks -ProfileName 'CustomProfile'
-
-    Loads workflows from the module and the CustomProfile USB profile.
-
-    .EXAMPLE
-    Initialize-MCDWorkflowTasks -Architecture 'amd64'
-
-    Loads only workflows that support the amd64 architecture.
-    #>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Tasks is the correct domain term for workflow tasks')]
     [CmdletBinding()]
     [OutputType([PSCustomObject[]])]

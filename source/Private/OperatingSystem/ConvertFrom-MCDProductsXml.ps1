@@ -1,34 +1,34 @@
+<#
+.SYNOPSIS
+Converts a Microsoft products.xml into normalized ESD catalog items.
+
+.DESCRIPTION
+Parses an MCT products.xml (typically extracted from a Microsoft fwlink CAB)
+and returns a deterministic, normalized set of items representing downloadable
+Windows ESD entries.
+
+.PARAMETER ProductsXml
+The products.xml loaded as an [xml] object.
+
+.PARAMETER SourceFwlinkId
+The fwlink id used to obtain the CAB that contained this products.xml.
+
+.PARAMETER ClientTypes
+Client type filters that must appear in the FilePath (e.g. CLIENTCONSUMER,
+CLIENTBUSINESS). Use both to build a combined catalog.
+
+.PARAMETER IncludeUrl
+Includes the FilePath (direct download URL) in returned items.
+
+.PARAMETER IncludeKey
+Includes the Key field from products.xml if present.
+
+.EXAMPLE
+[xml]$x = Get-Content -Path .\products.xml -Raw
+ConvertFrom-MCDProductsXml -ProductsXml $x -SourceFwlinkId 2156292 -ClientTypes @('CLIENTCONSUMER','CLIENTBUSINESS')
+#>
 function ConvertFrom-MCDProductsXml
 {
-    <#
-    .SYNOPSIS
-    Converts a Microsoft products.xml into normalized ESD catalog items.
-
-    .DESCRIPTION
-    Parses an MCT products.xml (typically extracted from a Microsoft fwlink CAB)
-    and returns a deterministic, normalized set of items representing downloadable
-    Windows ESD entries.
-
-    .PARAMETER ProductsXml
-    The products.xml loaded as an [xml] object.
-
-    .PARAMETER SourceFwlinkId
-    The fwlink id used to obtain the CAB that contained this products.xml.
-
-    .PARAMETER ClientTypes
-    Client type filters that must appear in the FilePath (e.g. CLIENTCONSUMER,
-    CLIENTBUSINESS). Use both to build a combined catalog.
-
-    .PARAMETER IncludeUrl
-    Includes the FilePath (direct download URL) in returned items.
-
-    .PARAMETER IncludeKey
-    Includes the Key field from products.xml if present.
-
-    .EXAMPLE
-    [xml]$x = Get-Content -Path .\products.xml -Raw
-    ConvertFrom-MCDProductsXml -ProductsXml $x -SourceFwlinkId 2156292 -ClientTypes @('CLIENTCONSUMER','CLIENTBUSINESS')
-    #>
     [CmdletBinding()]
     [OutputType([System.Object[]])]
     param
