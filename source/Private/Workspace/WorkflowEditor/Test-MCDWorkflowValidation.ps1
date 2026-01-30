@@ -75,14 +75,14 @@ function Test-MCDWorkflowValidation
             # Validate step name
             if ([string]::IsNullOrWhiteSpace($step.Name))
             {
-                $errors += "Step at index $stepIndex: Name is required."
+                $errors += "Step at index ${stepIndex}: Name is required."
                 $isValid = $false
             }
 
             # Validate step command
             if ([string]::IsNullOrWhiteSpace($step.Command))
             {
-                $errors += "Step '$($step.Name)' at index $stepIndex: Command is required."
+                $errors += "Step '$($step.Name)' at index ${stepIndex}: Command is required."
                 $isValid = $false
             }
             elseif ($ValidateCommands)
